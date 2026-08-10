@@ -1,5 +1,18 @@
 {
-  "mod_elements": [],
+  "mod_elements": [
+    {
+      "name": "AntiPiracyWorldHandler",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "anti_piracy_world_handler",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/AntiPiracyWorldHandler.java"
+        ]
+      }
+    }
+  ],
   "variable_elements": [],
   "sound_elements": [],
   "tag_elements": {},
