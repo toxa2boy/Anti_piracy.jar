@@ -11,6 +11,18 @@
           "src/main/java/net/mcreator/antipiracyjar/AntiPiracyWorldHandler.java"
         ]
       }
+    },
+    {
+      "name": "PiracyIsACrime",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "piracy_is_a_crime",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/PiracyIsACrime.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
