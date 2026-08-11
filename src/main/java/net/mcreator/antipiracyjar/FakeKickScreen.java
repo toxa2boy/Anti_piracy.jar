@@ -1,4 +1,3 @@
-
 package net.mcreator.antipiracyjar;
 
 import net.minecraft.client.Minecraft;
@@ -12,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FakeKickScreen extends Screen {
     private int ticksOpened = 0;
-    private static final ResourceLocation DIRT_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/dirt.png");
+    private static final ResourceLocation BACKGROUND_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/options_background.png");
 
     public FakeKickScreen() {
         super(Component.literal("Piracy is a crime!"));
@@ -60,13 +59,11 @@ public class FakeKickScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int size = 32;
-        guiGraphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
         for (int x = 0; x < this.width; x += size) {
             for (int y = 0; y < this.height; y += size) {
-                guiGraphics.blit(DIRT_LOCATION, x, y, 0, 0, size, size, size, size);
+                guiGraphics.blit(BACKGROUND_LOCATION, x, y, 0, 0, 0, size, size, 16, 16);
             }
         }
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 

@@ -85,6 +85,18 @@
           "src/main/resources/data/anti_piracyjar/worldgen/biome/flat_land_biom.json"
         ]
       }
+    },
+    {
+      "name": "AutoResourcePackLoader",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "auto_resource_pack_loader",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/AutoResourcePackLoader.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
