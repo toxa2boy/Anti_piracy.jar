@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -13,9 +14,13 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class AntiPiracyExitBlocker {
+
+    private static long lastClickTime = 0;
+    private static boolean textCleared = false;
 
     @SubscribeEvent
     public static void onScreenInit(ScreenEvent.Init.Post event) {
@@ -36,13 +41,32 @@ public class AntiPiracyExitBlocker {
                 });
 
         for (Button oldButton : buttonsToReplace) {
-            Button newButton = Button.builder(oldButton.getMessage(), b -> {
-                b.setMessage(Component.empty());
-                if (Minecraft.getInstance().player != null) {
-                    Minecraft.getInstance().player.sendSystemMessage(
-                            Component.literal("Did you really think that would work?").withStyle(ChatFormatting.RED)
-                    );
+            Component initialMessage = textCleared ? Component.empty() : oldButton.getMessage();
+            Button newButton = Button.builder(initialMessage, b -> {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClickTime < 60000) {
+                    return;
                 }
+                lastClickTime = currentTime;
+                textCleared = true;
+
+                b.setMessage(Component.empty());
+
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        Thread.sleep(500);
+                        Minecraft.getInstance().execute(() -> {
+                            if (Minecraft.getInstance().player != null) {
+                                Minecraft.getInstance().player.playSound(SoundEvents.AMBIENT_CAVE.value(), 1.0F, 1.0F);
+                                Minecraft.getInstance().player.sendSystemMessage(
+                                        Component.literal("Did you really think that would work?").withStyle(ChatFormatting.RED)
+                                );
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                });
             })
             .bounds(oldButton.getX(), oldButton.getY(), oldButton.getWidth(), oldButton.getHeight())
             .build();

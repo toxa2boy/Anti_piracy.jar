@@ -22,18 +22,18 @@ public class AntiPiracyTimerHandler {
         long ticks = persistentData.getLong("AntiPiracyTimer") + 1;
         persistentData.putLong("AntiPiracyTimer", ticks);
 
-        if (ticks == 8000) {
+        if (ticks == 8500) {
             Component message = Component.literal("████████ ")
                     .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
                     .append(Component.literal("Ignore that. Feel free to continue.").withStyle(ChatFormatting.WHITE));
             player.sendSystemMessage(message);
         } else if (ticks == 12000) {
             player.sendSystemMessage(Component.literal("I see you.").withStyle(ChatFormatting.RED));
-        } else if (ticks == 14000) {
+        } else if (ticks == 15000) {
             player.sendSystemMessage(Component.literal("At your window.").withStyle(ChatFormatting.RED));
-        } else if (ticks == 16000) {
+        } else if (ticks == 17500) {
             player.sendSystemMessage(Component.literal("Don't get up.").withStyle(ChatFormatting.RED));
-        } else if (ticks == 16500) {
+        } else if (ticks == 19500) {
             player.sendSystemMessage(Component.literal("Continue playing.").withStyle(ChatFormatting.RED));
         }
     }
