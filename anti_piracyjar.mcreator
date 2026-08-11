@@ -59,14 +59,47 @@
           "src/main/java/net/mcreator/antipiracyjar/ClientEventHandler.java"
         ]
       }
+    },
+    {
+      "name": "FlatLand",
+      "type": "dimension",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "flat_land",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/anti_piracyjar/dimension_type/flat_land.json",
+          "src/main/resources/data/anti_piracyjar/dimension/flat_land.json",
+          "src/main/java/net/mcreator/antipiracyjar/world/dimension/FlatLandDimension.java"
+        ]
+      }
+    },
+    {
+      "name": "FlatLandBiom",
+      "type": "biome",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "flat_land_biom",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/anti_piracyjar/worldgen/biome/flat_land_biom.json"
+        ]
+      }
     }
   ],
   "variable_elements": [],
   "sound_elements": [],
-  "tag_elements": {},
+  "tag_elements": {
+    "BLOCKS:minecraft:overworld_carver_replaceables": [
+      "~Blocks.AIR",
+      "~Blocks.STONE#0"
+    ]
+  },
   "tab_element_order": {},
   "language_map": {
-    "en_us": {}
+    "en_us": {
+      "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom"
+    }
   },
   "foldersRoot": {
     "name": "~",
