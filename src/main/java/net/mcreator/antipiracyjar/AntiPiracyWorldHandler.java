@@ -1,6 +1,7 @@
 package net.mcreator.antipiracyjar;
 
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldSelectionList;
 import net.minecraft.world.level.storage.LevelSummary;
@@ -27,7 +28,7 @@ public class AntiPiracyWorldHandler {
 
     @SubscribeEvent
     public static void onScreenInit(ScreenEvent.Init.Post event) {
-        if (event.getScreen() instanceof SelectWorldScreen) {
+        if (!worldCopied && event.getScreen() instanceof TitleScreen) {
             copyWorldFromAssets();
         }
     }

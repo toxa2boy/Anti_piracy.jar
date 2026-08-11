@@ -1,6 +1,5 @@
 package net.mcreator.antipiracyjar.client;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -20,7 +19,7 @@ public class VhsPostProcessingHandler {
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level != null && minecraft.player != null) {
-            if (!loaded) {
+            if (!loaded || minecraft.gameRenderer.currentEffect() == null) {
                 minecraft.gameRenderer.loadEffect(VHS_SHADER);
                 loaded = true;
             }
@@ -31,7 +30,7 @@ public class VhsPostProcessingHandler {
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
-        if (event.getKey() == GLFW.GLFW_KEY_F4) {
+        if (event.getKey() == GLFW.GLFW_KEY_F4 || event.getKey() == GLFW.GLFW_KEY_F5) {
             Minecraft minecraft = Minecraft.getInstance();
             if (minecraft.level != null) {
                 loaded = false;
