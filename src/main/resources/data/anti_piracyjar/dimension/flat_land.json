@@ -1,0 +1,30 @@
+{
+  "type": "anti_piracyjar:flat_land",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "anti_piracyjar:flat_land_biom",
+      "features": true,
+      "lakes": false,
+      "structure_overrides": [],
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
+          "block": "minecraft:air",
+          "height": 131
+        },
+        {
+          "block": "minecraft:dirt",
+          "height": 2
+        },
+        {
+          "block": "minecraft:grass_block",
+          "height": 1
+        }
+      ]
+    }
+  }
+}
