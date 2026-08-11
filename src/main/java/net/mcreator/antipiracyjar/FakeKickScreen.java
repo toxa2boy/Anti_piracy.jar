@@ -38,7 +38,7 @@ public class FakeKickScreen extends Screen {
     public void tick() {
         super.tick();
         ticksOpened++;
-        if (ticksOpened >= 280) {
+        if (ticksOpened >= 120) {
             this.onClose();
         }
     }
