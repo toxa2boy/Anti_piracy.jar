@@ -14,23 +14,21 @@ authors="toxa2, MCreator"
 # End of user code block mod configuration
 
 [[dependencies.anti_piracyjar]]
-modId="neoforge"
-type="required"
-versionRange="[21.1.65,)"
-ordering="AFTER"
-side="BOTH"
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1.65,)"
+    ordering="AFTER"
+    side="BOTH"
 
 [[dependencies.anti_piracyjar]]
-modId="minecraft"
-type="required"
-versionRange="[1.21.1]"
-ordering="AFTER"
-side="BOTH"
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21.1]"
+    ordering="AFTER"
+    side="BOTH"
 
 
 
 
 # Start of user code block dependencies configuration
-[[mixins]]
-config = "mixins.anti_piracyjar.json"
 # End of user code block dependencies configuration
