@@ -109,6 +109,18 @@
           "src/main/java/net/mcreator/antipiracyjar/SignMessages.java"
         ]
       }
+    },
+    {
+      "name": "FlatLandTreeScript",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "flat_land_tree_script",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/FlatLandTreeScript.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
