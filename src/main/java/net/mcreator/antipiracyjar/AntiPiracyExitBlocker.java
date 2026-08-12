@@ -11,7 +11,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ScreenEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -19,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 @EventBusSubscriber(value = Dist.CLIENT)
 public class AntiPiracyExitBlocker {
 
-    private static long lastClickTime = 0;
+    private static boolean hasTriggered = false;
     private static boolean textCleared = false;
 
     @SubscribeEvent
@@ -43,11 +42,10 @@ public class AntiPiracyExitBlocker {
         for (Button oldButton : buttonsToReplace) {
             Component initialMessage = textCleared ? Component.empty() : oldButton.getMessage();
             Button newButton = Button.builder(initialMessage, b -> {
-                long currentTime = System.currentTimeMillis();
-                if (currentTime - lastClickTime < 60000) {
+                if (hasTriggered) {
                     return;
                 }
-                lastClickTime = currentTime;
+                hasTriggered = true;
                 textCleared = true;
 
                 b.setMessage(Component.empty());
@@ -61,6 +59,14 @@ public class AntiPiracyExitBlocker {
                                 Minecraft.getInstance().player.sendSystemMessage(
                                         Component.literal("Did you really think that would work?").withStyle(ChatFormatting.RED)
                                 );
+                            }
+                        });
+
+                        Thread.sleep(3000);
+
+                        Minecraft.getInstance().execute(() -> {
+                            if (Minecraft.getInstance().player != null) {
+                                SignMessages.placeCreepySign();
                             }
                         });
                     } catch (InterruptedException e) {

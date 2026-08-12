@@ -97,6 +97,18 @@
           "src/main/java/net/mcreator/antipiracyjar/AutoResourcePackLoader.java"
         ]
       }
+    },
+    {
+      "name": "SignMessages",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "sign_messages",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/SignMessages.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
