@@ -121,10 +121,57 @@
           "src/main/java/net/mcreator/antipiracyjar/FlatLandTreeScript.java"
         ]
       }
+    },
+    {
+      "name": "Pirat",
+      "type": "livingentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "pirat",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/client/renderer/PiratRenderer.java",
+          "src/main/java/net/mcreator/antipiracyjar/entity/PiratEntity.java",
+          "src/main/resources/assets/anti_piracyjar/models/item/pirat_spawn_egg.json"
+        ]
+      }
+    },
+    {
+      "name": "PiratLookAtPlayerProcedure",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "pirat_look_at_player_procedure",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/PiratLookAtPlayerProcedure.java"
+        ]
+      }
+    },
+    {
+      "name": "AntiPiracyjarEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "anti_piracyjar_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/AntiPiracyjarEvent.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
-  "sound_elements": [],
+  "sound_elements": [
+    {
+      "name": "vhs",
+      "files": [
+        "dewyproductions2022-real-vhs-169982_mp3cut.net"
+      ],
+      "category": "ambient",
+      "subtitle": ""
+    }
+  ],
   "tag_elements": {
     "BLOCKS:minecraft:overworld_carver_replaceables": [
       "~Blocks.AIR",
@@ -134,7 +181,10 @@
   "tab_element_order": {},
   "language_map": {
     "en_us": {
-      "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom"
+      "item.anti_piracyjar.pirat_spawn_egg": "Pirat Spawn Egg",
+      "subtitles.vhs": "",
+      "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom",
+      "entity.anti_piracyjar.pirat": "Pirat"
     }
   },
   "foldersRoot": {
