@@ -16,4 +16,5 @@ import net.mcreator.antipiracyjar.AntiPiracyjarMod;
 public class AntiPiracyjarModSounds {
 	public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(Registries.SOUND_EVENT, AntiPiracyjarMod.MODID);
 	public static final DeferredHolder<SoundEvent, SoundEvent> VHS = REGISTRY.register("vhs", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "vhs")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> STUK_V_DVER = REGISTRY.register("stuk-v-dver", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "stuk-v-dver")));
 }

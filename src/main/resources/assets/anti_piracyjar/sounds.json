@@ -6,5 +6,13 @@
         "stream": false
       }
     ]
+  },
+  "stuk-v-dver": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:stuk-v-dver-1",
+        "stream": false
+      }
+    ]
   }
 }
