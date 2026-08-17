@@ -24,22 +24,22 @@ public class AntiPiracyTimerHandler {
         long ticks = persistentData.getLong("AntiPiracyTimer") + 1;
         persistentData.putLong("AntiPiracyTimer", ticks);
 
-        if (ticks == 8500) {
+        if (ticks == 7000) {
             Component message = Component.literal("████████ ")
                     .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
                     .append(Component.literal("Ignore that. Feel free to continue.").withStyle(ChatFormatting.WHITE));
             player.sendSystemMessage(message);
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMBIENT_CAVE, SoundSource.AMBIENT, 1.0F, 1.0F);
-        } else if (ticks == 12000) {
+        } else if (ticks == 9000) {
             player.sendSystemMessage(Component.literal("I see you.").withStyle(ChatFormatting.RED));
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMBIENT_CAVE, SoundSource.AMBIENT, 1.0F, 1.0F);
-        } else if (ticks == 15000) {
+        } else if (ticks == 10000) {
             player.sendSystemMessage(Component.literal("At your window.").withStyle(ChatFormatting.RED));
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMBIENT_CAVE, SoundSource.AMBIENT, 1.0F, 1.0F);
-        } else if (ticks == 17500) {
+        } else if (ticks == 13000) {
             player.sendSystemMessage(Component.literal("Don't get up.").withStyle(ChatFormatting.RED));
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMBIENT_CAVE, SoundSource.AMBIENT, 1.0F, 1.0F);
-        } else if (ticks == 19500) {
+        } else if (ticks == 13200) {
             player.sendSystemMessage(Component.literal("Continue playing.").withStyle(ChatFormatting.RED));
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMBIENT_CAVE, SoundSource.AMBIENT, 1.0F, 1.0F);
         }

@@ -14,18 +14,23 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
+        
+        // Проверяем, что игрок находится в мире
         if (mc.player != null && mc.level != null) {
             if (!wasInWorld) {
                 wasInWorld = true;
-                timer = 100;
+                // 6000 тиков = 5 минут (20 тиков в секунду * 60 секунд * 5)
+                timer = 6000; 
             } else if (timer > 0) {
                 timer--;
                 if (timer == 0) {
+                    // Время вышло - показываем фейковый экран кика
                     mc.setScreen(new FakeKickScreen());
                     timer = -1;
                 }
             }
         } else {
+            // Сбрасываем таймер, если игрок вышел из мира
             wasInWorld = false;
             timer = -1;
         }

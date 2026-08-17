@@ -64,6 +64,7 @@ public class FlatLandTreeScript {
     private static int scriptTimer = 0;             
     private static boolean doorReplaced = false;
     private static boolean secondPhaseTriggered = false;
+    private static boolean finalSoundStopped = false;
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -205,6 +206,14 @@ public class FlatLandTreeScript {
                                     .setMessage(2, Component.literal("It's beautiful"))
                                     .setMessage(3, Component.literal("here.")), true);
                         }
+                    }
+
+                    if (scriptTimer >= 410 && !isInsideRoom && !finalSoundStopped) {
+                        level.getServer().getCommands().performPrefixedCommand(
+                                level.getServer().createCommandSourceStack().withSuppressedOutput(),
+                                "stopsound @a"
+                        );
+                        finalSoundStopped = true;
                     }
                 }
             }
@@ -365,6 +374,7 @@ public class FlatLandTreeScript {
                         scriptTimer = 0;
                         doorReplaced = false;
                         secondPhaseTriggered = false;
+                        finalSoundStopped = false;
                         houseDoors.clear();
                     }
                 }
