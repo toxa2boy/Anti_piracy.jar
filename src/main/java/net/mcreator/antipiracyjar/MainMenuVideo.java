@@ -30,21 +30,12 @@ public final class MainMenuVideo {
     private static boolean introOpened;
 
     @SubscribeEvent
-    public static void onMenuOpen(ScreenEvent.Init.Post event) {
-        if (!(event.getScreen() instanceof TitleScreen) || introOpened) {
+    public static void onMenuOpening(ScreenEvent.Opening event) {
+        if (!(event.getNewScreen() instanceof TitleScreen) || introOpened) {
             return;
         }
-
         introOpened = true;
-        Minecraft minecraft = Minecraft.getInstance();
-        Screen menu = event.getScreen();
-        minecraft.execute(() -> {
-            if (minecraft.screen == menu) {
-                minecraft.setScreen(new IntroScreen(menu));
-            } else {
-                introOpened = false;
-            }
-        });
+        event.setNewScreen(new IntroScreen(event.getNewScreen()));
     }
 
     private static final class IntroScreen extends Screen {
@@ -59,13 +50,13 @@ public final class MainMenuVideo {
         private int textureHeight;
         private long startedAt = -1;
         private long spacePressedAt = -1;
-        private String error;
         private boolean finished;
+        private boolean failed;
 
         private IntroScreen(Screen menu) {
             super(Component.literal("Intro"));
             this.menu = menu;
-            this.preparation = IntroVideoSetup.prepare();
+            preparation = IntroVideoSetup.prepare();
         }
 
         @Override
@@ -78,7 +69,7 @@ public final class MainMenuVideo {
             if (finished) {
                 return;
             }
-            if (error != null) {
+            if (failed) {
                 graphics.drawCenteredString(font, "Could not prepare intro video", width / 2, height / 2 - 12, 0xFF5555);
                 graphics.drawCenteredString(font, "Press ENTER or ESC to continue", width / 2, height / 2 + 12, 0xFFFFFF);
                 return;
@@ -103,8 +94,8 @@ public final class MainMenuVideo {
                 }
                 Minecraft minecraft = Minecraft.getInstance();
                 minecraft.getMusicManager().stopPlaying();
-                SoundEvent event = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("lostinfog", "startvideo"));
-                sound = SimpleSoundInstance.forUI(event, 1.0F, 1.0F);
+                SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "startvideo"));
+                sound = SimpleSoundInstance.forUI(soundEvent, 1.0F, 1.0F);
                 minecraft.getSoundManager().play(sound);
                 startedAt = System.nanoTime();
                 now = startedAt;
@@ -120,13 +111,6 @@ public final class MainMenuVideo {
                 return;
             }
 
-            double scale = Math.min((double) width / textureWidth, (double) height / textureHeight);
-            int drawWidth = Math.max(1, (int) Math.round(textureWidth * scale));
-            int drawHeight = Math.max(1, (int) Math.round(textureHeight * scale));
-            graphics.blit(textureLocation, (width - drawWidth) / 2, (height - drawHeight) / 2,
-                    drawWidth, drawHeight, 0.0F, 0.0F,
-                    textureWidth, textureHeight, textureWidth, textureHeight);
-
             boolean spaceDown = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_SPACE);
             if (spaceDown) {
                 if (spacePressedAt < 0) {
@@ -139,6 +123,14 @@ public final class MainMenuVideo {
             } else {
                 spacePressedAt = -1;
             }
+
+            double scale = Math.min((double) width / textureWidth, (double) height / textureHeight);
+            int drawWidth = Math.max(1, (int) Math.round(textureWidth * scale));
+            int drawHeight = Math.max(1, (int) Math.round(textureHeight * scale));
+            graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+            graphics.blit(textureLocation, (width - drawWidth) / 2, (height - drawHeight) / 2,
+                    drawWidth, drawHeight, 0.0F, 0.0F,
+                    textureWidth, textureHeight, textureWidth, textureHeight);
             if (elapsed >= 5_000_000_000L || spaceDown) {
                 graphics.drawCenteredString(font, "Hold SPACE to skip", width / 2, height - 30, 0xFFFFFF);
             }
@@ -167,7 +159,7 @@ public final class MainMenuVideo {
         }
 
         private void fail(Exception exception) {
-            error = exception.toString();
+            failed = true;
             LOGGER.error("Unable to play AntiPiracyJar intro", exception);
             cleanup();
         }
@@ -193,7 +185,7 @@ public final class MainMenuVideo {
 
         @Override
         public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            if (error != null && (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_ESCAPE)) {
+            if (failed && (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_ESCAPE)) {
                 finish();
                 return true;
             }
@@ -205,14 +197,14 @@ public final class MainMenuVideo {
 
         @Override
         public void onClose() {
-            if (error != null) {
+            if (failed) {
                 finish();
             }
         }
 
         @Override
         public boolean shouldCloseOnEsc() {
-            return error != null;
+            return failed;
         }
 
         @Override
