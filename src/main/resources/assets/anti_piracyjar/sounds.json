@@ -14,5 +14,13 @@
         "stream": false
       }
     ]
+  },
+  "startvideo": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:startvideo",
+        "stream": false
+      }
+    ]
   }
 }

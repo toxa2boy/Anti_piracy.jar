@@ -147,6 +147,30 @@
           "src/main/java/net/mcreator/antipiracyjar/AntiPiracyjarEvent.java"
         ]
       }
+    },
+    {
+      "name": "IntroVideoSetup",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "intro_video_setup",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/IntroVideoSetup.java"
+        ]
+      }
+    },
+    {
+      "name": "MainMenuVideo",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "main_menu_video",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/MainMenuVideo.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
@@ -166,6 +190,14 @@
       ],
       "category": "neutral",
       "subtitle": ""
+    },
+    {
+      "name": "startvideo",
+      "files": [
+        "startvideo"
+      ],
+      "category": "neutral",
+      "subtitle": ""
     }
   ],
   "tag_elements": {
@@ -181,6 +213,7 @@
       "subtitles.vhs": "",
       "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom",
       "entity.anti_piracyjar.pirat": "Pirat",
+      "subtitles.startvideo": "",
       "subtitles.stuk-v-dver": ""
     }
   },
