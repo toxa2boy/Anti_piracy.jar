@@ -13,18 +13,6 @@
       }
     },
     {
-      "name": "AntiPiracyTimerHandler",
-      "type": "code",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "anti_piracy_timer_handler",
-      "metadata": {
-        "files": [
-          "src/main/java/net/mcreator/antipiracyjar/AntiPiracyTimerHandler.java"
-        ]
-      }
-    },
-    {
       "name": "AntiPiracyExitBlocker",
       "type": "code",
       "compiles": true,
