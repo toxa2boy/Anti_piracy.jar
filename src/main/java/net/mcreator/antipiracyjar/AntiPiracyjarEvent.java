@@ -116,9 +116,9 @@ public class AntiPiracyjarEvent {
         }
 
         int t = ticks.getOrDefault(id, 0);
-        if (t < 15000) {
+        if (t < 3600) { // 3 минуты (3600 тиков)
             ticks.put(id, t + 1);
-            if (t + 1 == 15000) {
+            if (t + 1 == 3600) {
                 ServerLevel level = (ServerLevel) player.level();
                 Vec3 look = player.getLookAngle();
 

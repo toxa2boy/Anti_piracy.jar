@@ -22,5 +22,14 @@
         "stream": false
       }
     ]
+  },
+  "pomehiogg": {
+    "subtitle": "subtitles.pomehiogg",
+    "sounds": [
+      {
+        "name": "anti_piracyjar:pomehiogg",
+        "stream": false
+      }
+    ]
   }
 }

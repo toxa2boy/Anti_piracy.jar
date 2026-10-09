@@ -17,12 +17,12 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 )
 public class ClientEventHandler {
     private static final int[] DELAYS = {
-            6000,
-            1000,
-            2000,
-            1000,
-            3000,
-            200
+            1200, // [0] До FakeKickScreen (1 минута = 60 * 20) - ИЗМЕНЕНО ДЛЯ ТЕСТА
+            400,  // [1] FakeKickScreen -> "Ignore that..." (20 секунд)
+            1200, // [2] "Ignore that..." -> "I see you." (1 минута)
+            100,  // [3] "I see you." -> "At your window." (5 секунд)
+            100,  // [4] "At your window." -> "Don't get up." (5 секунд)
+            200   // [5] "Don't get up." -> "Continue playing." (10 секунд)
     };
 
     private static boolean wasInWorld = false;

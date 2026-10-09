@@ -171,6 +171,18 @@
           "src/main/java/net/mcreator/antipiracyjar/MainMenuVideo.java"
         ]
       }
+    },
+    {
+      "name": "Piracydream",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "piracydream",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/Piracydream.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
@@ -198,6 +210,14 @@
       ],
       "category": "neutral",
       "subtitle": ""
+    },
+    {
+      "name": "pomehiogg",
+      "files": [
+        "pomehiogg"
+      ],
+      "category": "master",
+      "subtitle": "pomehi"
     }
   ],
   "tag_elements": {
@@ -214,6 +234,7 @@
       "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom",
       "entity.anti_piracyjar.pirat": "Pirat",
       "subtitles.startvideo": "",
+      "subtitles.pomehiogg": "pomehi",
       "subtitles.stuk-v-dver": ""
     }
   },
