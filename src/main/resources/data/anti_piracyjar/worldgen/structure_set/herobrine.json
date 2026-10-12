@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "anti_piracyjar:herobrine",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 20,
+    "separation": 12,
+    "salt": 600149729
+  }
+}

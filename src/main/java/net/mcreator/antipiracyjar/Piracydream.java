@@ -53,7 +53,6 @@ import java.util.Optional;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class Piracydream {
 
-    /** Клиентский флаг: идёт ли сейчас "сон". Выставляется пакетом с сервера. */
     public static volatile boolean clientDreamActive = false;
 
     public Piracydream() {
@@ -69,9 +68,6 @@ public class Piracydream {
     public static void clientLoad(FMLClientSetupEvent event) {
     }
 
-    // ------------------------------------------------------------------
-    // Пакет: сервер сообщает клиенту, начался/закончился "сон"
-    // ------------------------------------------------------------------
     public record DreamStatePayload(boolean active) implements CustomPacketPayload {
         public static final CustomPacketPayload.Type<DreamStatePayload> TYPE =
                 new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "dream_state"));
@@ -93,9 +89,6 @@ public class Piracydream {
         });
     }
 
-    // ------------------------------------------------------------------
-    // Серверная логика
-    // ------------------------------------------------------------------
     @EventBusSubscriber
     private static class PiracydreamForgeBusEvents {
 
@@ -108,10 +101,6 @@ public class Piracydream {
             return player.level().dimension().equals(FLAT_LAND_DIM);
         }
 
-        /**
-         * Завершает "сон": убирает структуру, выключает звук/ограничения на клиенте,
-         * переименовывает бумагу и (опционально) возвращает игрока обратно.
-         */
         private static void endDream(ServerPlayer player, boolean teleportBack) {
             CompoundTag data = player.getPersistentData();
 
@@ -166,7 +155,6 @@ public class Piracydream {
                 }
             }
 
-            // чистим старые данные, чтобы они не использовались повторно
             data.remove("PreDreamDim");
             data.remove("PreDreamX");
             data.remove("PreDreamY");
@@ -180,7 +168,7 @@ public class Piracydream {
         @SubscribeEvent
         public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
             if (event.getEntity() instanceof ServerPlayer player) {
-                // если игрок вышел во время сна и вернулся — снова включаем эффекты на клиенте
+
                 if (player.getPersistentData().getBoolean(DREAM_ACTIVE_KEY) && isInFlatLand(player)) {
                     PacketDistributor.sendToPlayer(player, new DreamStatePayload(true));
                 }
@@ -190,7 +178,7 @@ public class Piracydream {
         @SubscribeEvent
         public static void onPlayerTick(PlayerTickEvent.Post event) {
             if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer player) {
-                // страховка: если игрок покинул измерение сна другим путём — сон заканчивается
+
                 if (player.getPersistentData().getBoolean(DREAM_ACTIVE_KEY) && !isInFlatLand(player)) {
                     endDream(player, false);
                 }
@@ -284,7 +272,6 @@ public class Piracydream {
 
                 player.teleportTo(flatLand, targetX, targetY, targetZ, player.getYRot(), player.getXRot());
 
-                // сон начался: включаем звук и ограничения на клиенте
                 data.putBoolean(DREAM_ACTIVE_KEY, true);
                 PacketDistributor.sendToPlayer(player, new DreamStatePayload(true));
             }
@@ -295,7 +282,6 @@ public class Piracydream {
             if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer player) {
                 CompoundTag data = player.getPersistentData();
 
-                // реагируем на урон ТОЛЬКО во время активного сна
                 if (data.getBoolean(DREAM_ACTIVE_KEY) && isInFlatLand(player)) {
                     event.setCanceled(true);
                     player.setHealth(player.getMaxHealth());
@@ -305,18 +291,14 @@ public class Piracydream {
         }
     }
 
-    // ------------------------------------------------------------------
-    // Клиентская часть: зацикленный звук помех и блокировка прочих звуков
-    // ------------------------------------------------------------------
     @EventBusSubscriber(value = Dist.CLIENT)
     private static class PiracydreamClientEvents {
 
         private static final ResourceLocation DREAM_SOUND_ID =
                 ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "pomehiogg");
 
-        // Громкость
         private static final float DREAM_VOLUME = 0.15F;
-        // Скорость/тон: меньше 1.0 = медленнее и ниже (минимум 0.5 - ограничение Minecraft)
+
         private static final float DREAM_PITCH = 0.5F;
 
         private static DreamLoopSound loop = null;
@@ -329,13 +311,12 @@ public class Piracydream {
         public static void onClientTick(ClientTickEvent.Post event) {
             Minecraft mc = Minecraft.getInstance();
 
-            // вышли из мира/сервера — сбрасываем флаг
             if (mc.level == null) {
                 clientDreamActive = false;
             }
 
             if (isInDream()) {
-                // глушим уже играющую музыку
+
                 mc.getMusicManager().stopPlaying();
 
                 if (loop == null || loop.isStopped()) {
@@ -343,7 +324,7 @@ public class Piracydream {
                     mc.getSoundManager().play(loop);
                 }
             } else if (loop != null) {
-                // "пробуждение": останавливаем луп
+
                 mc.getSoundManager().stop(loop);
                 loop = null;
             }
@@ -358,15 +339,15 @@ public class Piracydream {
             if (sound == null) {
                 return;
             }
-            // наш звук помех пропускаем
+
             if (sound.getLocation().equals(DREAM_SOUND_ID)) {
                 return;
             }
-            // шаги игрока пропускаем
+
             boolean playerStep = sound.getSource() == SoundSource.PLAYERS
                     && sound.getLocation().getPath().endsWith(".step");
             if (!playerStep) {
-                event.setSound(null); // всё остальное (музыка, амбиент, мобы, погода) отменяем
+                event.setSound(null); 
             }
         }
 

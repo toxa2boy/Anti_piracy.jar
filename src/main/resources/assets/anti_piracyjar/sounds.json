@@ -31,5 +31,97 @@
         "stream": false
       }
     ]
+  },
+  "ambient": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:combined_grass_steps",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:combined_stone_steps",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:combined_wood_steps",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:grass1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:grass2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:grass3",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:grass4",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:grass5",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:grass6",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:rustling_leaves_1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:rustling_leaves_2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:rustling_leaves_3long",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:stone1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:stone2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:stone3",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:stone4",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:stone5",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:stone6",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:wood1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:wood2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:wood3",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:wood4",
+        "stream": false
+      }
+    ]
   }
 }

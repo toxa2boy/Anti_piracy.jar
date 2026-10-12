@@ -183,6 +183,87 @@
           "src/main/java/net/mcreator/antipiracyjar/Piracydream.java"
         ]
       }
+    },
+    {
+      "name": "AmbientEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "ambient_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/AmbientEvent.java"
+        ]
+      }
+    },
+    {
+      "name": "Herobrine",
+      "type": "structure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "herobrine",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/herobrine.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure_set/herobrine.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/herobrine.json"
+        ]
+      },
+      "path": "~/structuri"
+    },
+    {
+      "name": "Portal",
+      "type": "structure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "portal",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/portal.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/portal.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure_set/portal.json"
+        ]
+      },
+      "path": "~/structuri"
+    },
+    {
+      "name": "Clockkk",
+      "type": "structure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "clockkk",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/clockkk.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/clockkk.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure_set/clockkk.json"
+        ]
+      },
+      "path": "~/structuri"
+    },
+    {
+      "name": "LoginHorrorEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "login_horror_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/LoginHorrorEvent.java"
+        ]
+      }
+    },
+    {
+      "name": "StarterLootEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "starter_loot_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/StarterLootEvent.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
@@ -218,6 +299,35 @@
       ],
       "category": "master",
       "subtitle": "pomehi"
+    },
+    {
+      "name": "ambient",
+      "files": [
+        "combined_grass_steps",
+        "combined_stone_steps",
+        "combined_wood_steps",
+        "grass1",
+        "grass2",
+        "grass3",
+        "grass4",
+        "grass5",
+        "grass6",
+        "rustling_leaves_1",
+        "rustling_leaves_2",
+        "rustling_leaves_3long",
+        "stone1",
+        "stone2",
+        "stone3",
+        "stone4",
+        "stone5",
+        "stone6",
+        "wood1",
+        "wood2",
+        "wood3",
+        "wood4"
+      ],
+      "category": "neutral",
+      "subtitle": ""
     }
   ],
   "tag_elements": {
@@ -235,12 +345,18 @@
       "entity.anti_piracyjar.pirat": "Pirat",
       "subtitles.startvideo": "",
       "subtitles.pomehiogg": "pomehi",
+      "subtitles.ambient": "",
       "subtitles.stuk-v-dver": ""
     }
   },
   "foldersRoot": {
     "name": "~",
-    "children": []
+    "children": [
+      {
+        "name": "structuri",
+        "children": []
+      }
+    ]
   },
   "workspaceSettings": {
     "modid": "anti_piracyjar",
