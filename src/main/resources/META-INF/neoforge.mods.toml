@@ -11,25 +11,21 @@ credits="Created using mod maker MCreator - https://mcreator.net/about"
 authors="toxa2, MCreator"
 
 # Start of user code block mod configuration
-
-[[mixins]]
-config="anti_piracyjar.amano.mixins.json"
-
 # End of user code block mod configuration
 
 [[dependencies.anti_piracyjar]]
-modId="neoforge"
-type="required"
-versionRange="[21.1.65,)"
-ordering="AFTER"
-side="BOTH"
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1.65,)"
+    ordering="AFTER"
+    side="BOTH"
 
 [[dependencies.anti_piracyjar]]
-modId="minecraft"
-type="required"
-versionRange="[1.21.1]"
-ordering="AFTER"
-side="BOTH"
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21.1]"
+    ordering="AFTER"
+    side="BOTH"
 
 
 
