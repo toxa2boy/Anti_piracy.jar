@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.mcreator.antipiracyjar.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": ["AmanoFontMixin"],
+  "injectors": {"defaultRequire": 1}
+}

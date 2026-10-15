@@ -60,10 +60,24 @@ public class LoginHorrorEvent {
         }
     }
 
+    public record HorrorFontPayload(boolean enabled) implements CustomPacketPayload {
+        public static final Type<HorrorFontPayload> TYPE = new Type<>(
+                ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "horror_font"));
+        public static final StreamCodec<ByteBuf, HorrorFontPayload> STREAM_CODEC =
+                ByteBufCodecs.BOOL.map(HorrorFontPayload::new, HorrorFontPayload::enabled);
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
     @EventBusSubscriber(modid = "anti_piracyjar", bus = EventBusSubscriber.Bus.MOD)
     public static class NetworkEvents {
         @SubscribeEvent
         public static void registerPayloads(RegisterPayloadHandlersEvent event) {
+            event.registrar("1").playToClient(
+                    HorrorFontPayload.TYPE, HorrorFontPayload.STREAM_CODEC,
+                    (payload, context) -> context.enqueueWork(() -> VhsReadableGui.requestFont(payload.enabled())));
             event.registrar("1").playToClient(
                     HorrorDisconnectPayload.TYPE,
                     HorrorDisconnectPayload.STREAM_CODEC,
@@ -79,6 +93,8 @@ public class LoginHorrorEvent {
         FIRST_KICK,
         SECOND_KICK,
         FALLBACK_KICK,
+        FINAL_ENTRY,
+        ENABLE_FONT,
         START_SCENE
     }
 
@@ -112,11 +128,9 @@ public class LoginHorrorEvent {
             PENDING_ACTIONS.add(new PendingAction(player, ActionType.SECOND_KICK, 20));
         } else if (stage == 2) {
             player.removeEffect(MobEffects.BLINDNESS);
-            LOGIN_STAGES.put(playerId, 3);
-
-            Component joinMessage = Component.literal(player.getScoreboardName() + " joined the game")
-                    .withStyle(ChatFormatting.YELLOW);
-            player.server.getPlayerList().broadcastSystemMessage(joinMessage, false);
+            PENDING_ACTIONS.add(new PendingAction(player, ActionType.FINAL_ENTRY, 20));
+        } else if (stage >= 3) {
+            PENDING_ACTIONS.add(new PendingAction(player, ActionType.ENABLE_FONT, 20));
         }
     }
 
@@ -139,7 +153,17 @@ public class LoginHorrorEvent {
                 continue;
             }
 
-            if (action.type == ActionType.BLIND_PLAYER) {
+            if (action.type == ActionType.FINAL_ENTRY) {
+                Component leaveMessage = Component.translatable("multiplayer.player.left", player.getDisplayName())
+                        .withStyle(ChatFormatting.YELLOW);
+                player.server.getPlayerList().broadcastSystemMessage(leaveMessage, false);
+                LOGIN_STAGES.put(player.getUUID(), 3);
+                action.type = ActionType.ENABLE_FONT;
+                action.ticks = 20;
+            } else if (action.type == ActionType.ENABLE_FONT) {
+                PacketDistributor.sendToPlayer(player, new HorrorFontPayload(true));
+                iterator.remove();
+            } else if (action.type == ActionType.BLIND_PLAYER) {
                 player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0, false, false, false));
                 action.type = ActionType.START_SCENE;
                 action.ticks = BLINDNESS_BEFORE_STRUCTURES;
@@ -156,11 +180,6 @@ public class LoginHorrorEvent {
                 action.reason = first ? CONNECTION_ERROR : ALREADY_ONLINE;
                 LOGIN_STAGES.put(player.getUUID(), first ? 1 : 2);
 
-                if (!first) {
-                    Component leaveMessage = Component.literal(player.getScoreboardName() + " left the game")
-                            .withStyle(ChatFormatting.YELLOW);
-                    player.server.getPlayerList().broadcastSystemMessage(leaveMessage, false);
-                }
 
                 PacketDistributor.sendToPlayer(player, new HorrorDisconnectPayload(action.reason));
                 action.type = ActionType.FALLBACK_KICK;

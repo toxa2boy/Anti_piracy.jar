@@ -67,7 +67,7 @@ public class ClientEventHandler {
         switch (currentStage) {
             case 0 -> mc.setScreen(new FakeKickScreen());
             case 1 -> {
-                Component message = Component.literal("████████ ")
+                Component message = Component.literal("<???>")
                         .withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
                         .append(Component.literal("Ignore that. Feel free to continue.")
                                 .withStyle(ChatFormatting.WHITE));
