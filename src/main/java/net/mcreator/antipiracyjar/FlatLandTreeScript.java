@@ -66,9 +66,15 @@ public class FlatLandTreeScript {
     private static boolean secondPhaseTriggered = false;
     private static boolean finalSoundStopped = false;
 
+    // ИЗМЕНЕНИЕ 1: при входе в мир восстанавливаем флаг из сохранённых данных игрока
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        playersSpawnedTree.remove(event.getEntity().getUUID());
+        UUID id = event.getEntity().getUUID();
+        if (event.getEntity().getPersistentData().getBoolean("antipiracyjar_tree_spawned")) {
+            playersSpawnedTree.add(id);
+        } else {
+            playersSpawnedTree.remove(id);
+        }
     }
 
     @SubscribeEvent
@@ -92,6 +98,8 @@ public class FlatLandTreeScript {
                 buildManualOakTree(level, groundPos);
 
                 playersSpawnedTree.add(uuid);
+                // ИЗМЕНЕНИЕ 2: запоминаем в данных игрока, что дерево уже создано
+                player.getPersistentData().putBoolean("antipiracyjar_tree_spawned", true);
                 currentTreePos = groundPos;
                 treeDirection = facing;
                 treeChopped = false;
@@ -122,9 +130,10 @@ public class FlatLandTreeScript {
             if (!houseDoors.isEmpty()) {
                 BlockPos primaryDoor = houseDoors.get(0);
 
-                boolean isInsideRoom = pPos.getX() >= -37 && pPos.getX() <= -32 &&
-                                       pPos.getY() >= 134 && pPos.getY() <= 138 &&
-                                       pPos.getZ() >= 58  && pPos.getZ() <= 63  &&
+                // ИЗМЕНЕНО: комната теперь привязана к углу дома (houseMinPos), а не к абсолютным координатам
+                boolean isInsideRoom = pPos.getX() >= houseMinPos.getX() + 8 && pPos.getX() <= houseMinPos.getX() + 13 &&
+                                       pPos.getY() >= houseMinPos.getY()     && pPos.getY() <= houseMinPos.getY() + 4  &&
+                                       pPos.getZ() >= houseMinPos.getZ() + 8 && pPos.getZ() <= houseMinPos.getZ() + 13 &&
                                        pPos.getZ() >= (primaryDoor.getZ() + 1);
 
                 if (!scriptActivated) {
@@ -192,11 +201,11 @@ public class FlatLandTreeScript {
                             level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
                         }
                         
-                        level.setBlock(new BlockPos(-32, 138, 58), Blocks.AIR.defaultBlockState(), 3);
+                        level.setBlock(houseMinPos.offset(13, 4, 8), Blocks.AIR.defaultBlockState(), 3);
                         
-                        level.setBlock(new BlockPos(-34, 135, 59), Blocks.AIR.defaultBlockState(), 3);
+                        level.setBlock(houseMinPos.offset(11, 1, 9), Blocks.AIR.defaultBlockState(), 3);
 
-                        BlockPos finalSignPos = new BlockPos(-33, 135, 43);
+                        BlockPos finalSignPos = houseMinPos.offset(12, 1, -7);
                         level.setBlock(finalSignPos, Blocks.OAK_SIGN.defaultBlockState(), 3);
                         BlockEntity finalSignBe = level.getBlockEntity(finalSignPos);
                         if (finalSignBe instanceof SignBlockEntity finalSign) {
@@ -205,6 +214,20 @@ public class FlatLandTreeScript {
                                     .setMessage(1, Component.literal("leave?"))
                                     .setMessage(2, Component.literal("It's beautiful"))
                                     .setMessage(3, Component.literal("here.")), true);
+                        }
+                    }
+
+                    // НОВОЕ: через 5 секунд (100 тиков) после последней таблички (410) - табличка из видео
+                    if (scriptTimer == 510) {
+                        BlockPos lastSignPos = houseMinPos.offset(12, 1, -7);
+                        level.setBlock(lastSignPos, Blocks.OAK_SIGN.defaultBlockState(), 3);
+                        BlockEntity lastSignBe = level.getBlockEntity(lastSignPos);
+                        if (lastSignBe instanceof SignBlockEntity lastSign) {
+                            lastSign.updateText(text -> text
+                                    .setMessage(0, Component.literal("There is no"))
+                                    .setMessage(1, Component.literal("real world."))
+                                    .setMessage(2, Component.literal("Not for you."))
+                                    .setMessage(3, Component.literal("Not anymore.")), true);
                         }
                     }
 
@@ -235,8 +258,10 @@ public class FlatLandTreeScript {
             }
         }
 
-        BlockPos plank1Pos = new BlockPos(-35, 136, 62);
-        BlockPos sign1Pos = new BlockPos(-35, 136, 61); 
+        if (houseMinPos == null) return;
+
+        BlockPos plank1Pos = houseMinPos.offset(10, 2, 12);
+        BlockPos sign1Pos = houseMinPos.offset(10, 2, 11); 
 
         level.setBlock(plank1Pos, Blocks.OAK_PLANKS.defaultBlockState(), 3);
         level.setBlock(sign1Pos, Blocks.OAK_WALL_SIGN.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH), 3);
@@ -250,7 +275,7 @@ public class FlatLandTreeScript {
                     .setMessage(3, Component.literal("die?")), true);
         }
 
-        BlockPos sign2Pos = new BlockPos(-33, 136, 62); 
+        BlockPos sign2Pos = houseMinPos.offset(12, 2, 12); 
         
         level.setBlock(sign2Pos, Blocks.OAK_WALL_SIGN.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST), 3);
 
