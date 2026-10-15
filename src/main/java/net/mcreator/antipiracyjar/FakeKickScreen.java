@@ -10,11 +10,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.resources.ResourceLocation;
 
 public class FakeKickScreen extends Screen {
+    public static boolean amanoEnabled = false;
     private int ticksOpened = 0;
     private static final ResourceLocation BACKGROUND_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/options_background.png");
 
     public FakeKickScreen() {
         super(Component.literal("Piracy is a crime!"));
+        amanoEnabled = false;
         if (Minecraft.getInstance().player != null) {
             Minecraft.getInstance().player.playSound(SoundEvents.AMBIENT_CAVE.value(), 1.0F, 0.5F);
         }
@@ -45,6 +47,7 @@ public class FakeKickScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
+        VhsReadableGui.afterWarningClosed();
         if (Minecraft.getInstance().player != null) {
             Minecraft.getInstance().player.playSound(SoundEvents.AMBIENT_CAVE.value(), 1.0F, 0.5F);
             for (int i = 0; i < 20; i++) {

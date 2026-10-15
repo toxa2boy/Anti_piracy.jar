@@ -276,6 +276,18 @@
           "src/main/java/net/mcreator/antipiracyjar/SSturctures.java"
         ]
       }
+    },
+    {
+      "name": "VhsBackgroundSound",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "vhs_background_sound",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/VhsBackgroundSound.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
