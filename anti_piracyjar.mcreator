@@ -264,6 +264,18 @@
           "src/main/java/net/mcreator/antipiracyjar/StarterLootEvent.java"
         ]
       }
+    },
+    {
+      "name": "SSturctures",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "s_sturctures",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/SSturctures.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -103,6 +104,7 @@ public class LoginHorrorEvent {
         UUID playerId = player.getUUID();
         PENDING_ACTIONS.removeIf(action -> action.player.getUUID().equals(playerId));
         int stage = LOGIN_STAGES.getOrDefault(playerId, 0);
+
         if (stage == 0) {
             PENDING_ACTIONS.add(new PendingAction(player, ActionType.BLIND_PLAYER, FIRST_KICK_DELAY));
         } else if (stage == 1) {
@@ -111,6 +113,10 @@ public class LoginHorrorEvent {
         } else if (stage == 2) {
             player.removeEffect(MobEffects.BLINDNESS);
             LOGIN_STAGES.put(playerId, 3);
+
+            Component joinMessage = Component.literal(player.getScoreboardName() + " joined the game")
+                    .withStyle(ChatFormatting.YELLOW);
+            player.server.getPlayerList().broadcastSystemMessage(joinMessage, false);
         }
     }
 
@@ -149,6 +155,13 @@ public class LoginHorrorEvent {
                 boolean first = action.type == ActionType.FIRST_KICK;
                 action.reason = first ? CONNECTION_ERROR : ALREADY_ONLINE;
                 LOGIN_STAGES.put(player.getUUID(), first ? 1 : 2);
+
+                if (!first) {
+                    Component leaveMessage = Component.literal(player.getScoreboardName() + " left the game")
+                            .withStyle(ChatFormatting.YELLOW);
+                    player.server.getPlayerList().broadcastSystemMessage(leaveMessage, false);
+                }
+
                 PacketDistributor.sendToPlayer(player, new HorrorDisconnectPayload(action.reason));
                 action.type = ActionType.FALLBACK_KICK;
                 action.ticks = 40;
