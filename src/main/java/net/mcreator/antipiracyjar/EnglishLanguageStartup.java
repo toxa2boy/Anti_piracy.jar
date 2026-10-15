@@ -8,23 +8,25 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 @EventBusSubscriber(modid = "anti_piracyjar", value = Dist.CLIENT)
 public class EnglishLanguageStartup {
-    private static boolean applied;
+    private static int ticks;
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
-        if (applied) {
-            return;
-        }
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.options == null || minecraft.getOverlay() != null) {
+        if (minecraft.options == null || minecraft.getOverlay() != null) return;
+        if (ticks > 0) {
+            ticks--;
             return;
         }
-
-        applied = true;
+        ticks = 19;
+        if (!"en_us".equals(minecraft.getLanguageManager().getSelected())) {
+            minecraft.getLanguageManager().setSelected("en_us");
+            minecraft.getLanguageManager().onResourceManagerReload(minecraft.getResourceManager());
+            minecraft.gui.getChat().rescaleChat();
+        }
         if (!"en_us".equals(minecraft.options.languageCode)) {
             minecraft.options.languageCode = "en_us";
             minecraft.options.save();
         }
-
     }
 }

@@ -42,6 +42,7 @@ public class HorrorFontFinishEvent {
                         if (payload.closed() && context.player() instanceof ServerPlayer player
                                 && handled.add(player.getUUID()) && remaining < 0) {
                             remaining = 200;
+                            com.mojang.logging.LogUtils.getLogger().info("[Amano] Warning closed; starting 200-tick timer");
                         }
                     }));
             event.registrar("1").playToClient(FontFinishPayload.TYPE, FontFinishPayload.CODEC,
@@ -55,6 +56,7 @@ public class HorrorFontFinishEvent {
     public static void tick(ServerTickEvent.Post event) {
         if (remaining > 0 && --remaining == 0) {
             remaining = -1;
+            com.mojang.logging.LogUtils.getLogger().info("[Amano] Broadcasting chat clear and font activation");
             for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
                 PacketDistributor.sendToPlayer(player, new FontFinishPayload(true));
             }
