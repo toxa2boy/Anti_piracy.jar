@@ -21,14 +21,10 @@ public class EnglishLanguageStartup {
         }
 
         applied = true;
-        boolean reload = !"en_us".equals(minecraft.getLanguageManager().getSelected());
-        minecraft.getLanguageManager().setSelected("en_us");
         if (!"en_us".equals(minecraft.options.languageCode)) {
             minecraft.options.languageCode = "en_us";
             minecraft.options.save();
         }
-        if (reload) {
-            minecraft.reloadResourcePacks();
-        }
+
     }
 }

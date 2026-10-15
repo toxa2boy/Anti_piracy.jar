@@ -5,53 +5,53 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = "anti_piracyjar", value = Dist.CLIENT)
 public class VhsReadableGui {
-    private static boolean requested;
-    private static int ticksRemaining;
-
-    public static void requestFont(boolean enabled) {
-        requested = enabled;
-        ticksRemaining = 20;
-        if (!enabled) {
-            FakeKickScreen.amanoEnabled = false;
-        }
-    }
+    private static boolean pending;
 
     public static void afterWarningClosed() {
-        ticksRemaining = 20;
+        if (Minecraft.getInstance().getConnection() != null) {
+            PacketDistributor.sendToServer(new HorrorFontFinishEvent.WarningClosedPayload(true));
+        }
     }
 
-    @SubscribeEvent
-    public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
-        requested = false;
-        FakeKickScreen.amanoEnabled = false;
-        ticksRemaining = 0;
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
+    public static void clearChatAndEnable() {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.screen instanceof TitleScreen) {
-            requested = false;
-            FakeKickScreen.amanoEnabled = false;
-            return;
-        }
-        if (!requested || FakeKickScreen.amanoEnabled || minecraft.level == null
-                || minecraft.getOverlay() != null || minecraft.screen instanceof FakeKickScreen) {
-            return;
-        }
-        if (ticksRemaining > 0 && --ticksRemaining > 0) {
-            return;
-        }
+        minecraft.gui.getChat().clearMessages(true);
+        pending = true;
+        applyFont();
+    }
+
+    private static void applyFont() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!pending || minecraft.level == null || minecraft.getOverlay() != null
+                || minecraft.screen instanceof FakeKickScreen) return;
+        pending = false;
         FakeKickScreen.amanoEnabled = true;
         minecraft.gui.getChat().rescaleChat();
         if (minecraft.screen != null) {
             minecraft.screen.resize(minecraft, minecraft.getWindow().getGuiScaledWidth(),
                     minecraft.getWindow().getGuiScaledHeight());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+        pending = false;
+        FakeKickScreen.amanoEnabled = false;
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        if (Minecraft.getInstance().screen instanceof TitleScreen) {
+            pending = false;
+            FakeKickScreen.amanoEnabled = false;
+        } else {
+            applyFont();
         }
     }
 }

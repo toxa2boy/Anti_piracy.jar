@@ -60,24 +60,10 @@ public class LoginHorrorEvent {
         }
     }
 
-    public record HorrorFontPayload(boolean enabled) implements CustomPacketPayload {
-        public static final Type<HorrorFontPayload> TYPE = new Type<>(
-                ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "horror_font"));
-        public static final StreamCodec<ByteBuf, HorrorFontPayload> STREAM_CODEC =
-                ByteBufCodecs.BOOL.map(HorrorFontPayload::new, HorrorFontPayload::enabled);
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
-    }
     @EventBusSubscriber(modid = "anti_piracyjar", bus = EventBusSubscriber.Bus.MOD)
     public static class NetworkEvents {
         @SubscribeEvent
         public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-            event.registrar("1").playToClient(
-                    HorrorFontPayload.TYPE, HorrorFontPayload.STREAM_CODEC,
-                    (payload, context) -> context.enqueueWork(() -> VhsReadableGui.requestFont(payload.enabled())));
             event.registrar("1").playToClient(
                     HorrorDisconnectPayload.TYPE,
                     HorrorDisconnectPayload.STREAM_CODEC,
@@ -94,7 +80,7 @@ public class LoginHorrorEvent {
         SECOND_KICK,
         FALLBACK_KICK,
         FINAL_ENTRY,
-        ENABLE_FONT,
+
         START_SCENE
     }
 
@@ -129,8 +115,6 @@ public class LoginHorrorEvent {
         } else if (stage == 2) {
             player.removeEffect(MobEffects.BLINDNESS);
             PENDING_ACTIONS.add(new PendingAction(player, ActionType.FINAL_ENTRY, 20));
-        } else if (stage >= 3) {
-            PENDING_ACTIONS.add(new PendingAction(player, ActionType.ENABLE_FONT, 20));
         }
     }
 
@@ -158,10 +142,7 @@ public class LoginHorrorEvent {
                         .withStyle(ChatFormatting.YELLOW);
                 player.server.getPlayerList().broadcastSystemMessage(leaveMessage, false);
                 LOGIN_STAGES.put(player.getUUID(), 3);
-                action.type = ActionType.ENABLE_FONT;
-                action.ticks = 20;
-            } else if (action.type == ActionType.ENABLE_FONT) {
-                PacketDistributor.sendToPlayer(player, new HorrorFontPayload(true));
+
                 iterator.remove();
             } else if (action.type == ActionType.BLIND_PLAYER) {
                 player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0, false, false, false));

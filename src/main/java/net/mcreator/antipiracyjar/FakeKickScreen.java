@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FakeKickScreen extends Screen {
     public static boolean amanoEnabled = false;
+    private boolean closed;
     private int ticksOpened = 0;
     private static final ResourceLocation BACKGROUND_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/options_background.png");
 
@@ -46,8 +47,10 @@ public class FakeKickScreen extends Screen {
 
     @Override
     public void onClose() {
+        if (closed) return;
+        closed = true;
         super.onClose();
-        VhsReadableGui.afterWarningClosed();
+
         if (Minecraft.getInstance().player != null) {
             Minecraft.getInstance().player.playSound(SoundEvents.AMBIENT_CAVE.value(), 1.0F, 0.5F);
             for (int i = 0; i < 20; i++) {
@@ -56,6 +59,7 @@ public class FakeKickScreen extends Screen {
                                 .withStyle(ChatFormatting.RED)
                 );
             }
+            VhsReadableGui.afterWarningClosed();
         }
     }
 
