@@ -1,0 +1,13 @@
+{
+  "type": "anti_piracyjar:kamniizmerenie",
+  "generator": {
+    "type": "anti_piracyjar:stone_rooms",
+    "settings": {
+      "biome": "anti_piracyjar:kamnibiom",
+      "features": false,
+      "lakes": false,
+      "structure_overrides": [],
+      "layers": [{"block": "minecraft:stone", "height": 384}]
+    }
+  }
+}

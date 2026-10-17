@@ -64,6 +64,7 @@ public class AntiPiracyjarEvent {
             return;
         }
 
+        if (player.getPersistentData().getBoolean(FlatLandFinale.DONE)) return;
         UUID id = player.getUUID();
         int seq = sequenceTicks.getOrDefault(id, 0);
 
@@ -116,7 +117,7 @@ public class AntiPiracyjarEvent {
         }
 
         int t = ticks.getOrDefault(id, 0);
-        if (t < 3600) { // 3 минуты (3600 тиков)
+        if (t < 3600) { 
             ticks.put(id, t + 1);
             if (t + 1 == 3600) {
                 ServerLevel level = (ServerLevel) player.level();

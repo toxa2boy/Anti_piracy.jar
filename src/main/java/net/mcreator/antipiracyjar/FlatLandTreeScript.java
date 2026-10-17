@@ -70,14 +70,14 @@ public class FlatLandTreeScript {
     private static boolean secondPhaseTriggered = false;
     private static boolean finalSoundStopped = false;
 
-    // НОВОЕ: тайминги (в тиках, 20 тиков = 1 секунда; отсчёт - scriptTimer)
-    private static final int WHITE_SKY_TICK = 650;   // 550 (табличка "There is no real world") + 5 секунд
-    private static final int FINAL_SIGN_TICK = 650;  // заключительная табличка "Dig. ;)"
+    
+    private static final int WHITE_SKY_TICK = 650;   
+    private static final int FINAL_SIGN_TICK = 650;  
     private static final String FINAL_SIGN_KEY = "antipiracyjar_final_sign";
-    // момент начала белой вспышки (мс); 0 = нет. Читается клиентским FogHandler (работает в одиночной игре / хост LAN)
+    
     private static volatile long whiteoutStartMillis = 0L;
 
-    // ИЗМЕНЕНИЕ 1: при входе в мир восстанавливаем флаг из сохранённых данных игрока
+    
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         UUID id = event.getEntity().getUUID();
@@ -98,21 +98,8 @@ public class FlatLandTreeScript {
 
         UUID uuid = player.getUUID();
 
-        // НОВОЕ: после появления заключительной таблички приземление на бедрок (высота ~0) убивает игрока
-        // (урон от падения) и сразу же кикает его с сообщением "Expired"
-        if (player instanceof ServerPlayer serverPlayer
-                && serverPlayer.getPersistentData().getBoolean(FINAL_SIGN_KEY)
-                && serverPlayer.getY() <= 1.2D) {
-            // флаг снимаем, чтобы при повторном входе игрока не кикало сразу же (удалите строку, если нужно "навсегда")
-            serverPlayer.getPersistentData().remove(FINAL_SIGN_KEY);
-            if (!serverPlayer.isDeadOrDying()) {
-                // если падение не убило само (например, спустился по лестнице) - добиваем уроном от падения
-                serverPlayer.hurt(level.damageSources().fall(), Float.MAX_VALUE);
-            }
-            serverPlayer.connection.disconnect(Component.literal("Expired"));
-            return;
-        }
-
+        
+        
         if (!playersSpawnedTree.contains(uuid) && player.tickCount % 20 == 0) {
             Direction facing = player.getDirection();
             BlockPos targetPos = player.blockPosition().relative(facing, 30);
@@ -124,7 +111,7 @@ public class FlatLandTreeScript {
                 buildManualOakTree(level, groundPos);
 
                 playersSpawnedTree.add(uuid);
-                // ИЗМЕНЕНИЕ 2: запоминаем в данных игрока, что дерево уже создано
+                
                 player.getPersistentData().putBoolean("antipiracyjar_tree_spawned", true);
                 currentTreePos = groundPos;
                 treeDirection = facing;
@@ -156,7 +143,7 @@ public class FlatLandTreeScript {
             if (!houseDoors.isEmpty()) {
                 BlockPos primaryDoor = houseDoors.get(0);
 
-                // ИЗМЕНЕНО: комната теперь привязана к углу дома (houseMinPos), а не к абсолютным координатам
+                
                 boolean isInsideRoom = pPos.getX() >= houseMinPos.getX() + 8 && pPos.getX() <= houseMinPos.getX() + 13 &&
                                        pPos.getY() >= houseMinPos.getY()     && pPos.getY() <= houseMinPos.getY() + 4  &&
                                        pPos.getZ() >= houseMinPos.getZ() + 8 && pPos.getZ() <= houseMinPos.getZ() + 13 &&
@@ -243,11 +230,11 @@ public class FlatLandTreeScript {
                         }
                     }
 
-                    // НОВОЕ: через 7 секунд (140 тиков) после того, как дверь открылась (410) - табличка из видео
-                    // координаты -39 135 51 при доме в (-45,134,50) = смещение (6,1,1) от угла дома
+                    
+                    
                     if (scriptTimer == 550) {
                         BlockPos videoSignPos = houseMinPos.offset(6, 1, 1);
-                        // ROTATION_16: 0 = на юг, 8 = на север (развёрнута на 180 градусов)
+                        
                         level.setBlock(videoSignPos, Blocks.OAK_SIGN.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, 8), 3);
                         BlockEntity videoSignBe = level.getBlockEntity(videoSignPos);
                         if (videoSignBe instanceof SignBlockEntity videoSign) {
@@ -259,15 +246,15 @@ public class FlatLandTreeScript {
                         }
                     }
 
-                    // НОВОЕ: через 5 секунд после последней таблички - небо вспыхивает белым
+                    
                     if (scriptTimer == WHITE_SKY_TICK) {
                         whiteoutStartMillis = System.currentTimeMillis();
                     }
 
-                    // НОВОЕ: заключительная табличка на -41 135 36 (при доме в (-45,134,50) = смещение (4,1,-14))
+                    
                     if (scriptTimer == FINAL_SIGN_TICK) {
                         BlockPos digSignPos = houseMinPos.offset(4, 1, -14);
-                        // ROTATION_16: 0 = на юг, 8 = на север
+                        
                         level.setBlock(digSignPos, Blocks.OAK_SIGN.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, 0), 3);
                         BlockEntity digSignBe = level.getBlockEntity(digSignPos);
                         if (digSignBe instanceof SignBlockEntity digSign) {
@@ -534,7 +521,7 @@ public class FlatLandTreeScript {
 
     @EventBusSubscriber(value = Dist.CLIENT)
     public static class FogHandler {
-        // 0..1: насколько небо уже побелело (вспышка нарастает ~2 секунды)
+        
         private static float whiteProgress() {
             long start = whiteoutStartMillis;
             if (start <= 0L) return 0.0F;
@@ -549,7 +536,7 @@ public class FlatLandTreeScript {
                 float far = 40.0F;
                 float p = whiteProgress();
                 if (p > 0.0F && event.getMode() == FogRenderer.FogMode.FOG_SKY) {
-                    // небо целиком заливается цветом тумана (белым)
+                    
                     near = 15.0F * (1.0F - p);
                     far = 40.0F - 39.0F * p;
                 }
@@ -559,8 +546,8 @@ public class FlatLandTreeScript {
             }
         }
 
-        // насколько сильно белая пелена перекрывает экран (0..1). Небо само по себе уже максимально белое,
-        // поэтому для ощущения "выжигает глаза" поверх всего рисуется белое свечение. Меняйте это число.
+        
+        
         private static final float GLARE_MAX_ALPHA = 0.6F;
 
         @SubscribeEvent

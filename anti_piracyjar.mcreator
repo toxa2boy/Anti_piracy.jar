@@ -288,6 +288,36 @@
           "src/main/java/net/mcreator/antipiracyjar/VhsBackgroundSound.java"
         ]
       }
+    },
+    {
+      "name": "Kamnibiom",
+      "type": "biome",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "kamnibiom",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/anti_piracyjar/worldgen/biome/kamnibiom.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/placed_feature/kamnibiom_tree.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/configured_feature/kamnibiom_tree.json"
+        ]
+      },
+      "path": "~/kamni"
+    },
+    {
+      "name": "Kamniizmerenie",
+      "type": "dimension",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "kamniizmerenie",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/world/dimension/KamniizmerenieDimension.java",
+          "src/main/resources/data/anti_piracyjar/dimension_type/kamniizmerenie.json",
+          "src/main/resources/data/anti_piracyjar/dimension/kamniizmerenie.json"
+        ]
+      },
+      "path": "~/kamni"
     }
   ],
   "variable_elements": [],
@@ -358,6 +388,18 @@
     "BLOCKS:minecraft:overworld_carver_replaceables": [
       "~Blocks.AIR",
       "~Blocks.STONE#0"
+    ],
+    "BIOMES:minecraft:has_structure/jungle_temple": [
+      "~CUSTOM:Kamnibiom"
+    ],
+    "BIOMES:minecraft:has_structure/mineshaft_mesa": [
+      "~CUSTOM:Kamnibiom"
+    ],
+    "BIOMES:minecraft:has_structure/mineshaft": [
+      "~CUSTOM:Kamnibiom"
+    ],
+    "BIOMES:minecraft:has_structure/village_plains": [
+      "~CUSTOM:Kamnibiom"
     ]
   },
   "tab_element_order": {},
@@ -370,6 +412,7 @@
       "subtitles.startvideo": "",
       "subtitles.pomehiogg": "pomehi",
       "subtitles.ambient": "",
+      "biome.anti_piracyjar.kamnibiom": "Kamnibiom",
       "subtitles.stuk-v-dver": ""
     }
   },
@@ -379,15 +422,19 @@
       {
         "name": "structuri",
         "children": []
+      },
+      {
+        "name": "kamni",
+        "children": []
       }
     ]
   },
   "workspaceSettings": {
     "modid": "anti_piracyjar",
     "modName": "Anti_piracy.jar",
-    "version": "1.0.0",
-    "author": "toxa2, MCreator",
-    "websiteURL": "https://mcreator.net",
+    "version": "0.0.1",
+    "author": "Vapsig, FLYover67, JDG",
+    "websiteURL": "https://discord.com/invite/BpshSf8jhP",
     "license": "Not specified",
     "serverSideOnly": false,
     "requiredMods": [],
@@ -395,6 +442,7 @@
     "dependants": [],
     "mcreatorDependencies": [],
     "currentGenerator": "neoforge-1.21.1",
+    "credits": "в",
     "modElementsPackage": "net.mcreator.antipiracyjar"
   },
   "mcreatorVersion": 202400452410
