@@ -1,0 +1,25 @@
+package net.mcreator.antipiracyjar.entity.model;
+
+import software.bernie.geckolib.model.GeoModel;
+
+import net.minecraft.resources.ResourceLocation;
+
+import net.mcreator.antipiracyjar.entity.DrunEntity;
+
+public class DrunModel extends GeoModel<DrunEntity> {
+	@Override
+	public ResourceLocation getAnimationResource(DrunEntity entity) {
+		return ResourceLocation.parse("anti_piracyjar:animations/weird-fool.animation.json");
+	}
+
+	@Override
+	public ResourceLocation getModelResource(DrunEntity entity) {
+		return ResourceLocation.parse("anti_piracyjar:geo/weird-fool.geo.json");
+	}
+
+	@Override
+	public ResourceLocation getTextureResource(DrunEntity entity) {
+		return ResourceLocation.parse("anti_piracyjar:textures/entities/" + entity.getTexture() + ".png");
+	}
+
+}

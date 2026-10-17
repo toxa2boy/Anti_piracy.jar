@@ -10,11 +10,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
 import net.mcreator.antipiracyjar.client.renderer.PiratRenderer;
+import net.mcreator.antipiracyjar.client.renderer.DrunRenderer;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AntiPiracyjarModEntityRenderers {
 	@SubscribeEvent
 	public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(AntiPiracyjarModEntities.PIRAT.get(), PiratRenderer::new);
+		event.registerEntityRenderer(AntiPiracyjarModEntities.DRUN.get(), DrunRenderer::new);
 	}
 }

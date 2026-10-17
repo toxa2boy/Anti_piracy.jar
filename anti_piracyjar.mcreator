@@ -318,6 +318,22 @@
         ]
       },
       "path": "~/kamni"
+    },
+    {
+      "name": "Drun",
+      "type": "animatedentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "drun",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/client/renderer/DrunRenderer.java",
+          "src/main/resources/assets/anti_piracyjar/models/item/drun_spawn_egg.json",
+          "src/main/resources/data/anti_piracyjar/neoforge/biome_modifier/drun_biome_modifier.json",
+          "src/main/java/net/mcreator/antipiracyjar/entity/DrunEntity.java",
+          "src/main/java/net/mcreator/antipiracyjar/entity/model/DrunModel.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
@@ -386,7 +402,6 @@
   ],
   "tag_elements": {
     "BLOCKS:minecraft:overworld_carver_replaceables": [
-      "~Blocks.AIR",
       "~Blocks.STONE#0"
     ],
     "BIOMES:minecraft:has_structure/jungle_temple": [
@@ -409,10 +424,12 @@
       "subtitles.vhs": "",
       "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom",
       "entity.anti_piracyjar.pirat": "Pirat",
+      "entity.anti_piracyjar.drun": "Drun",
       "subtitles.startvideo": "",
       "subtitles.pomehiogg": "pomehi",
       "subtitles.ambient": "",
       "biome.anti_piracyjar.kamnibiom": "Kamnibiom",
+      "item.anti_piracyjar.drun_spawn_egg": "Drun Spawn Egg",
       "subtitles.stuk-v-dver": ""
     }
   },
@@ -442,7 +459,9 @@
     "requiredMods": [],
     "dependencies": [],
     "dependants": [],
-    "mcreatorDependencies": [],
+    "mcreatorDependencies": [
+      "geckolib"
+    ],
     "currentGenerator": "neoforge-1.21.1",
     "credits": "Vapsig, FLYover67, JDG, HPR",
     "modElementsPackage": "net.mcreator.antipiracyjar"

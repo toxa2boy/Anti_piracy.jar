@@ -30,6 +30,12 @@ description="You bought your first second-hand computer. The seller said Minecra
     side="BOTH"
 
 
+[[dependencies.anti_piracyjar]]
+    modId="geckolib"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 
 
 # Start of user code block dependencies configuration
