@@ -1,7 +1,9 @@
 package net.mcreator.antipiracyjar;
 
+import com.mojang.brigadier.arguments.LongArgumentType;
 import net.mcreator.antipiracyjar.entity.PiratEntity;
 import net.mcreator.antipiracyjar.init.AntiPiracyjarModEntities;
+import net.minecraft.commands.Commands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,6 +23,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -30,32 +33,52 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @EventBusSubscriber
 public class AntiPiracyjarEvent {
-    private static final Map<UUID, Integer> ticks = new ConcurrentHashMap<>();
     private static final Map<UUID, Boolean> locked = new ConcurrentHashMap<>();
     private static final Map<UUID, Vec3> pos = new ConcurrentHashMap<>();
     private static final Map<UUID, Float> yaw = new ConcurrentHashMap<>();
     private static final Map<UUID, Float> pitch = new ConcurrentHashMap<>();
     private static final Map<UUID, Entity> spawned = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> sequenceTicks = new ConcurrentHashMap<>();
+    private static final Map<UUID, Boolean> eventTriggered = new ConcurrentHashMap<>();
+
+    private static final long DAYTIME_LIMIT = 12000L;
+
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(
+            Commands.literal("anti_piracy_finish_messages")
+                .then(Commands.argument("day", LongArgumentType.longArg(0))
+                    .executes(context -> {
+                        if (context.getSource().getEntity() instanceof ServerPlayer player) {
+                            long day = LongArgumentType.getLong(context, "day");
+                            if (!player.getPersistentData().getBoolean("AntiPiracyMessagesFinished")) {
+                                player.getPersistentData().putBoolean("AntiPiracyMessagesFinished", true);
+                                player.getPersistentData().putLong("AntiPiracyMessagesFinishedDay", day);
+                            }
+                        }
+                        return 1;
+                    }))
+        );
+    }
 
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         UUID id = event.getEntity().getUUID();
-        ticks.put(id, 0);
         locked.put(id, false);
         sequenceTicks.put(id, 0);
+        eventTriggered.put(id, false);
     }
 
     @SubscribeEvent
     public static void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         UUID id = event.getEntity().getUUID();
-        ticks.remove(id);
         locked.remove(id);
         pos.remove(id);
         yaw.remove(id);
         pitch.remove(id);
         spawned.remove(id);
         sequenceTicks.remove(id);
+        eventTriggered.remove(id);
     }
 
     @SubscribeEvent
@@ -116,34 +139,43 @@ public class AntiPiracyjarEvent {
             return;
         }
 
-        int t = ticks.getOrDefault(id, 0);
-        if (t < 3600) { 
-            ticks.put(id, t + 1);
-            if (t + 1 == 3600) {
-                ServerLevel level = (ServerLevel) player.level();
-                Vec3 look = player.getLookAngle();
+        if (eventTriggered.getOrDefault(id, false)) return;
 
-                double x = player.getX() + look.x * 20.0;
-                double z = player.getZ() + look.z * 20.0;
-                double y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) x, (int) z);
+        boolean messagesFinished = player.getPersistentData().getBoolean("AntiPiracyMessagesFinished");
+        if (!messagesFinished) return;
 
-                Entity entity = AntiPiracyjarModEntities.PIRAT.get().create(level);
+        ServerLevel level = (ServerLevel) player.level();
+        long dayTime = level.getDayTime();
+        long currentDay = dayTime / 24000L;
+        long timeOfDay = dayTime % 24000L;
+        long finishedDay = player.getPersistentData().getLong("AntiPiracyMessagesFinishedDay");
 
-                if (entity instanceof PiratEntity pirat) {
-                    pirat.setPos(x, y, z);
-                    pirat.noPhysics = true;
-                    pirat.setNoGravity(true);
-                    
-                    level.addFreshEntity(pirat);
-                    
-                    level.playSound(null, player.blockPosition(), SoundEvents.AMBIENT_CAVE.value(), SoundSource.AMBIENT, 1.0F, 1.0F);
+        boolean isDaytime = level.isDay() && timeOfDay < DAYTIME_LIMIT;
 
-                    locked.put(id, true);
-                    pos.put(id, player.position());
-                    yaw.put(id, player.getYRot());
-                    pitch.put(id, player.getXRot());
-                    spawned.put(id, pirat);
-                }
+        if (currentDay >= finishedDay + 1L && isDaytime) {
+            eventTriggered.put(id, true);
+
+            Vec3 look = player.getLookAngle();
+            double x = player.getX() + look.x * 20.0;
+            double z = player.getZ() + look.z * 20.0;
+            double y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) x, (int) z);
+
+            Entity entity = AntiPiracyjarModEntities.PIRAT.get().create(level);
+
+            if (entity instanceof PiratEntity pirat) {
+                pirat.setPos(x, y, z);
+                pirat.noPhysics = true;
+                pirat.setNoGravity(true);
+                
+                level.addFreshEntity(pirat);
+                
+                level.playSound(null, player.blockPosition(), SoundEvents.AMBIENT_CAVE.value(), SoundSource.AMBIENT, 1.0F, 1.0F);
+
+                locked.put(id, true);
+                pos.put(id, player.position());
+                yaw.put(id, player.getYRot());
+                pitch.put(id, player.getXRot());
+                spawned.put(id, pirat);
             }
         }
     }
