@@ -1,14 +1,16 @@
 modLoader="javafml"
 loaderVersion="[4,)"
-license="Not specified"
+license="MIT License"
 
 [[mods]]
 modId="anti_piracyjar"
 version="0.0.1"
 displayName="Anti_piracy.jar"
 displayURL="https://discord.com/invite/BpshSf8jhP"
-credits="\u0432"
+logoFile="logo.png"
+credits="Created using mod maker MCreator - https://mcreator.net/about"
 authors="Vapsig, FLYover67, JDG"
+description="You bought your first second-hand computer. The seller said Minecraft was already installed. Among the old files and pirated games, you find a world left behind by the previous owner. The owner is dead. At first, the strange errors seem like nothing more than problems with a pirated copy. You launch the game. It\u2019s still waiting for him.."
 
 # Start of user code block mod configuration
 # End of user code block mod configuration
