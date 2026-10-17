@@ -100,95 +100,13 @@ public final class StoneWorldGenerator extends FlatLevelSource {
     }
 
     static final class Column {
-        final int x, z, width, depth, height, kind;
-        final boolean room, tunnel, beam, lamp;
-
+        final StoneWorldLayout.Sample sample;
+        final int kind;
         Column(int wx, int wz, long seed) {
-            int cx = Math.floorDiv(wx, 48), cz = Math.floorDiv(wz, 48);
-            long h = hash(cx, cz, seed);
-            x = Math.floorMod(wx, 48) - 24;
-            z = Math.floorMod(wz, 48) - 24;
-            kind = cx == 0 && cz == 0 ? 0 : (int) Math.floorMod(h, 6);
-            width = 8 + (int) ((h >>> 8) % 6);
-            depth = 9 + (int) ((h >>> 16) % 6);
-            height = kind == 1 ? 12 : 7 + (int) ((h >>> 24) % 5);
-            room = Math.abs(x) <= width && Math.abs(z) <= depth;
-            int edgeZ = z < 0 ? cz - 1 : cz;
-            boolean northSouth = Math.floorMod(cx, 3) == 0 || (hash(cx, edgeZ, seed + 71) & 3) == 0;
-            tunnel = Math.abs(z) <= 1 || (northSouth && Math.abs(x) <= 1);
-            beam = !room && ((Math.abs(z) <= 1 && Math.floorMod(wx, 9) == 0)
-                    || (northSouth && Math.abs(x) <= 1 && Math.floorMod(wz, 9) == 0));
-            lamp = !room && Math.abs(z) == 1 && Math.floorMod(wx, 23) == 0;
+            sample = StoneWorldLayout.column(wx, wz, seed);
+            kind = sample.kind;
         }
-
-        BlockState at(int y) {
-            if (y <= -64 || y >= 319) return Blocks.BEDROCK.defaultBlockState();
-            int dy = y - FLOOR;
-            if (dy < 0 || dy > height) return Blocks.STONE.defaultBlockState();
-            if (room) {
-                if (dy == 0) return (kind == 0 && Math.abs(x) <= 4 && Math.abs(z + 5) <= 3 ? Blocks.OAK_PLANKS
-                        : kind <= 2 ? Blocks.GRASS_BLOCK : kind == 3 ? Blocks.OAK_PLANKS : Blocks.STONE).defaultBlockState();
-                BlockState detail = decoration(dy);
-                return detail == null ? Blocks.AIR.defaultBlockState() : detail;
-            }
-            if (tunnel && dy > 0 && dy <= 4) {
-                if (beam && (dy == 4 || (Math.abs(z) == 1 && Math.abs(x) > width) || (Math.abs(x) == 1 && Math.abs(z) > depth)))
-                    return (dy == 4 ? Blocks.OAK_PLANKS : Blocks.OAK_FENCE).defaultBlockState();
-                if (lamp && dy == 1) return Blocks.TORCH.defaultBlockState();
-                return Blocks.AIR.defaultBlockState();
-            }
-            return Blocks.STONE.defaultBlockState();
-        }
-
-        BlockState decoration(int y) {
-            if (kind == 0) {
-                BlockState house = house(x, z + 5, y);
-                if (house != null) return house;
-                if (x == -5 && z == 3 && y <= 3) return Blocks.OAK_FENCE.defaultBlockState();
-                if (x == -5 && z == 3 && y == 4) return Blocks.TORCH.defaultBlockState();
-            }
-            if (kind == 1) {
-                for (int[] tree : new int[][] {{-5,-5},{5,4},{-4,6}}) {
-                    int dx = x - tree[0], dz = z - tree[1];
-                    if (dx == 0 && dz == 0 && y <= 6) return Blocks.OAK_LOG.defaultBlockState();
-                    if (y >= 5 && y <= 8 && Math.abs(dx) <= (y == 8 ? 1 : 2) && Math.abs(dz) <= (y == 8 ? 1 : 2))
-                        return Blocks.OAK_LEAVES.defaultBlockState().setValue(BlockStateProperties.PERSISTENT, true);
-                }
-                if (x == 0 && z == -4 && y == 1) return Blocks.TORCH.defaultBlockState();
-            }
-            if (kind == 2) {
-                int dx = x - 4, dz = z - 4;
-                int radius = Math.max(Math.abs(dx), Math.abs(dz));
-                if (y == 1 && radius <= 3) return Blocks.COBBLESTONE.defaultBlockState();
-                if (y == 2 && radius == 2) return Blocks.COBBLESTONE.defaultBlockState();
-                if (y == 2 && radius < 2) return Blocks.WATER.defaultBlockState();
-                if ((y == 3 || y == 4) && Math.abs(dx) == 2 && Math.abs(dz) == 2) return Blocks.OAK_FENCE.defaultBlockState();
-                if (y == 5 && radius <= 3) return Blocks.COBBLESTONE.defaultBlockState();
-                if (dx == -3 && dz == -3 && y == 2) return Blocks.TORCH.defaultBlockState();
-            }
-            if (kind == 3) {
-                if (Math.abs(x) >= 3 && Math.abs(x) <= width - 1 && z >= -depth + 2 && z <= -3) {
-                    if (y == 4) return Blocks.OAK_PLANKS.defaultBlockState();
-                    if (y <= 3 && (Math.abs(x) == 3 || z == -3 || Math.abs(x) == width - 1 || z == -depth + 2)) {
-                        if (Math.abs(x) == 3 && z == -5 && y <= 2) return Blocks.AIR.defaultBlockState();
-                        return Blocks.COBBLESTONE.defaultBlockState();
-                    }
-                    if (y == 1 && Math.abs(x) == 5 && (z == -depth + 4 || z == -depth + 3)) return bed(z == -depth + 3);
-                    if (y == 1 && Math.abs(x) == width - 2 && z == -4) return Blocks.TORCH.defaultBlockState();
-                }
-            }
-            if (kind == 5) {
-                if ((z == -6 || z == 6) && Math.abs(x) <= 6) {
-                    if (y == 5) return Blocks.OAK_PLANKS.defaultBlockState();
-                    if (y < 5 && Math.abs(x) == 6) return Blocks.OAK_FENCE.defaultBlockState();
-                }
-                if (x == 4 && y == 1 && Math.abs(z) <= depth - 2) return Blocks.RAIL.defaultBlockState().setValue(BlockStateProperties.RAIL_SHAPE, RailShape.NORTH_SOUTH);
-                if (x == -5 && z == -5 && y == 1) return Blocks.TORCH.defaultBlockState();
-            }
-            if (kind == 4 && x == -width + 1 && z == -depth + 1 && y == 1) return Blocks.TORCH.defaultBlockState();
-            return null;
-        }
-
+        BlockState at(int y) { return sample.at(y); }
         static BlockState house(int x, int z, int y) {
             if (Math.abs(x) > 4 || Math.abs(z) > 3 || y > 5) return null;
             if (y == 5) return Blocks.OAK_PLANKS.defaultBlockState();
