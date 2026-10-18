@@ -13,7 +13,7 @@ public class PiratLookAtPlayerProcedure {
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
-        if (event.getEntity() instanceof PiratEntity entity && !entity.level().isClientSide() && entity.tickCount % 2 == 0) {
+        if (event.getEntity() instanceof PiratEntity entity) {
             Player player = entity.level().getNearestPlayer(entity, 128.0D);
             if (player != null) {
                 double d0 = player.getX() - entity.getX();

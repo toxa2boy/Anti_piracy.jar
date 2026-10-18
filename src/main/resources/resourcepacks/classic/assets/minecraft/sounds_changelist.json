@@ -1,0 +1,1418 @@
+{
+  "ambient.underwater.enter": {
+    "sounds": []
+  },
+  "ambient.underwater.exit": {
+    "sounds": []
+  },
+  "entity.axolotl.swim": {
+    "sounds": []
+  },
+  "entity.dolphin.swim": {
+    "sounds": []
+  },
+  "entity.drowned.swim": {
+    "sounds": []
+  },
+  "entity.fish.swim": {
+    "sounds": []
+  },
+  "entity.generic.swim": {
+    "sounds": []
+  },
+  "entity.hostile.swim": {
+    "sounds": []
+  },
+  "entity.skeleton_horse.swim": {
+    "sounds": []
+  },
+  "entity.turtle.swim": {
+    "sounds": []
+  },
+  "entity.player.swim": {
+    "sounds": []
+  },
+  "entity.minecart.inside": {
+    "sounds": []
+  },
+  "entity.minecart.inside.underwater": {
+    "sounds": []
+  },
+  "entity.minecart.riding": {
+    "sounds": []
+  },
+  "entity.fishing_bobber.retrieve": {
+    "sounds": []
+  },
+  "entity.fishing_bobber.throw": {
+    "sounds": [
+      "random/bow"
+    ]
+  },
+  "entity.axolotl.splash": {
+    "sounds": [
+      "liquid/splash",
+      "liquid/splash2"
+    ]
+  },
+  "entity.dolphin.splash": {
+    "sounds": [
+      "liquid/splash",
+      "liquid/splash2"
+    ]
+  },
+  "block.scaffolding.fall": {
+    "sounds": [
+      "step/ladder1",
+      "step/ladder2",
+      "step/ladder3",
+      "step/ladder4",
+      "step/ladder5"
+    ]
+  },
+  "block.scaffolding.hit": {
+    "sounds": [
+      "step/ladder1",
+      "step/ladder2",
+      "step/ladder3",
+      "step/ladder4",
+      "step/ladder5"
+    ]
+  },
+  "block.scaffolding.step": {
+    "sounds": [
+      "step/ladder1",
+      "step/ladder2",
+      "step/ladder3",
+      "step/ladder4",
+      "step/ladder5"
+    ]
+  },
+  "block.suspicious_gravel.break": {
+    "sounds": [
+      "dig/gravel1",
+      "dig/gravel2",
+      "dig/gravel3",
+      "dig/gravel4"
+    ]
+  },
+  "block.suspicious_gravel.fall": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "block.suspicious_gravel.hit": {
+    "sounds": [
+      "dig/gravel1",
+      "dig/gravel2",
+      "dig/gravel3",
+      "dig/gravel4"
+    ]
+  },
+  "block.suspicious_gravel.place": {
+    "sounds": [
+      "dig/gravel1",
+      "dig/gravel2",
+      "dig/gravel3",
+      "dig/gravel4"
+    ]
+  },
+  "block.suspicious_gravel.step": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "block.soul_sand.break": {
+    "sounds": [
+      "dig/sand1",
+      "dig/sand2",
+      "dig/sand3",
+      "dig/sand4"
+    ]
+  },
+  "block.soul_sand.fall": {
+    "sounds": [
+      "step/sand1",
+      "step/sand2",
+      "step/sand3",
+      "step/sand4",
+      "step/sand5"
+    ]
+  },
+  "block.soul_sand.hit": {
+    "sounds": [
+      "dig/sand1",
+      "dig/sand2",
+      "dig/sand3",
+      "dig/sand4"
+    ]
+  },
+  "block.soul_sand.place": {
+    "sounds": [
+      "dig/sand1",
+      "dig/sand2",
+      "dig/sand3",
+      "dig/sand4"
+    ]
+  },
+  "block.soul_sand.step": {
+    "sounds": [
+      "step/sand1",
+      "step/sand2",
+      "step/sand3",
+      "step/sand4",
+      "step/sand5"
+    ]
+  },
+  "block.soul_soil.break": {
+    "sounds": [
+      "dig/gravel1",
+      "dig/gravel2",
+      "dig/gravel3",
+      "dig/gravel4"
+    ]
+  },
+  "block.soul_soil.fall": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "block.soul_soil.hit": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "block.soul_soil.place": {
+    "sounds": [
+      "dig/gravel1",
+      "dig/gravel2",
+      "dig/gravel3",
+      "dig/gravel4"
+    ]
+  },
+  "block.soul_soil.step": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "block.suspicious_sand.break": {
+    "sounds": [
+      "dig/sand1",
+      "dig/sand2",
+      "dig/sand3",
+      "dig/sand4"
+    ]
+  },
+  "block.suspicious_sand.fall": {
+    "sounds": [
+      "step/sand1",
+      "step/sand2",
+      "step/sand3",
+      "step/sand4",
+      "step/sand5"
+    ]
+  },
+  "block.suspicious_sand.hit": {
+    "sounds": [
+      "step/sand1",
+      "step/sand2",
+      "step/sand3",
+      "step/sand4",
+      "step/sand5"
+    ]
+  },
+  "block.suspicious_sand.place": {
+    "sounds": [
+      "dig/sand1",
+      "dig/sand2",
+      "dig/sand3",
+      "dig/sand4"
+    ]
+  },
+  "block.suspicious_sand.step": {
+    "sounds": [
+      "step/sand1",
+      "step/sand2",
+      "step/sand3",
+      "step/sand4",
+      "step/sand5"
+    ]
+  },
+  "entity.camel.step_sand": {
+    "sounds": [
+      "step/sand1",
+      "step/sand2",
+      "step/sand3",
+      "step/sand4",
+      "step/sand5"
+    ]
+  },
+  "block.rooted_dirt.break": {
+    "sounds": [
+      "dig/gravel1",
+      "dig/gravel2",
+      "dig/gravel3",
+      "dig/gravel4"
+    ]
+  },
+  "block.rooted_dirt.fall": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "block.rooted_dirt.hit": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "block.rooted_dirt.place": {
+    "sounds": [
+      "dig/gravel1",
+      "dig/gravel2",
+      "dig/gravel3",
+      "dig/gravel4"
+    ]
+  },
+  "block.rooted_dirt.step": {
+    "sounds": [
+      "step/gravel1",
+      "step/gravel2",
+      "step/gravel3",
+      "step/gravel4"
+    ]
+  },
+  "item.crossbow.shoot": {
+    "sounds": [
+      "random/bow"
+    ]
+  },
+  "entity.player.hurt_drown": {
+    "sounds": [
+      "damage/hit1",
+      "damage/hit2",
+      "damage/hit3"
+    ]
+  },
+  "entity.player.hurt_freeze": {
+    "sounds": [
+      "damage/hit1",
+      "damage/hit2",
+      "damage/hit3"
+    ]
+  },
+  "entity.player.hurt_on_fire": {
+    "sounds": [
+      "damage/hit1",
+      "damage/hit2",
+      "damage/hit3"
+    ]
+  },
+  "entity.player.hurt_sweet_berry_bush": {
+    "sounds": [
+      "damage/hit1",
+      "damage/hit2",
+      "damage/hit3"
+    ]
+  },
+  "block.basalt.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.basalt.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.basalt.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.basalt.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.basalt.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.calcite.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.calcite.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.calcite.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.calcite.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.calcite.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.dripstone_block.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.dripstone_block.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.dripstone_block.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.dripstone_block.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.dripstone_block.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.deepslate.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.deepslate.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate_bricks.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.deepslate_bricks.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate_bricks.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate_bricks.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.deepslate_bricks.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate_tiles.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.deepslate_tiles.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate_tiles.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.deepslate_tiles.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.deepslate_tiles.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.tuff.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.tuff.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.tuff.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.tuff.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.tuff.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.gilded_blackstone.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.gilded_blackstone.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.gilded_blackstone.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.gilded_blackstone.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.gilded_blackstone.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_bricks.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.nether_bricks.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_bricks.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_bricks.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.nether_bricks.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_gold_ore.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.nether_gold_ore.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_gold_ore.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_gold_ore.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.nether_gold_ore.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_ore.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.nether_ore.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_ore.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_ore.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.nether_ore.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.netherrack.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.netherrack.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.netherrack.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.netherrack.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.netherrack.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.coral_block.break": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.coral_block.fall": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.coral_block.hit": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.coral_block.place": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ]
+  },
+  "block.coral_block.step": {
+    "sounds": [
+      "step/stone1",
+      "step/stone2",
+      "step/stone3",
+      "step/stone4",
+      "step/stone5",
+      "step/stone6"
+    ]
+  },
+  "block.nether_wood_hanging_sign.break": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.nether_wood_hanging_sign.fall": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.nether_wood_hanging_sign.hit": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.nether_wood_hanging_sign.place": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.nether_wood_hanging_sign.step": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.nether_wood.break": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.nether_wood.fall": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.nether_wood.hit": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.nether_wood.place": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.nether_wood.step": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.cherry_wood.break": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.cherry_wood.fall": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.cherry_wood.hit": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.cherry_wood.place": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.cherry_wood.step": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.cherry_wood_hanging_sign.break": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.cherry_wood_hanging_sign.fall": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.cherry_wood_hanging_sign.hit": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.cherry_wood_hanging_sign.place": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.cherry_wood_hanging_sign.step": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.hanging_sign.break": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.hanging_sign.fall": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.hanging_sign.hit": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.hanging_sign.place": {
+    "sounds": [
+      "dig/wood1",
+      "dig/wood2",
+      "dig/wood3",
+      "dig/wood4"
+    ]
+  },
+  "block.hanging_sign.step": {
+    "sounds": [
+      "step/wood1",
+      "step/wood2",
+      "step/wood3",
+      "step/wood4",
+      "step/wood5",
+      "step/wood6"
+    ]
+  },
+  "block.barrel.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.barrel.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.cherry_wood_door.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.cherry_wood_door.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.cherry_wood_fence_gate.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.cherry_wood_fence_gate.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.cherry_wood_trapdoor.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.cherry_wood_trapdoor.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.chest.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.chest.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.ender_chest.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.ender_chest.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.fence_gate.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.fence_gate.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.iron_door.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.iron_door.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.iron_trapdoor.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.iron_trapdoor.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.nether_wood_door.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.nether_wood_door.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.nether_wood_fence_gate.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.nether_wood_fence_gate.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.nether_wood_trapdoor.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.nether_wood_trapdoor.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.wooden_door.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.wooden_door.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.wooden_trapdoor.close": {
+    "sounds": [
+      {
+        "name": "block/lock/close",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.wooden_trapdoor.open": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "entity.villager.work_fisherman": {
+    "sounds": [
+      {
+        "name": "block/lock/open",
+        "volume": 0.9
+      }
+    ]
+  },
+  "block.lily_pad.place": {
+    "sounds": [
+      {
+        "name": "dig/wet_grass1",
+        "volume": 0.8
+      },
+      {
+        "name": "dig/wet_grass2",
+        "volume": 0.8
+      },
+      {
+        "name": "dig/wet_grass3",
+        "volume": 0.8
+      },
+      {
+        "name": "dig/wet_grass4",
+        "volume": 0.8
+      }
+    ]
+  }
+}

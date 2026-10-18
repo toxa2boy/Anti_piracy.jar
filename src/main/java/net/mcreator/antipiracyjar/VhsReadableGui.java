@@ -30,10 +30,8 @@ public class VhsReadableGui {
         Minecraft minecraft = Minecraft.getInstance();
         if (!pending || minecraft.level == null || minecraft.getOverlay() != null
                 || minecraft.screen instanceof FakeKickScreen) return;
-        if (!AmanoFontController.install()) return;
         pending = false;
         FakeKickScreen.amanoEnabled = true;
-        com.mojang.logging.LogUtils.getLogger().info("[Amano] Font enabled after warning; chat cleared");
         minecraft.gui.getChat().rescaleChat();
         if (minecraft.screen != null) {
             minecraft.screen.resize(minecraft, minecraft.getWindow().getGuiScaledWidth(),

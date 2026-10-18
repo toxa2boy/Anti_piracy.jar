@@ -200,7 +200,7 @@
       "name": "Herobrine",
       "type": "structure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "herobrine",
       "metadata": {
         "files": [
@@ -215,7 +215,7 @@
       "name": "Portal",
       "type": "structure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "portal",
       "metadata": {
         "files": [
@@ -230,7 +230,7 @@
       "name": "Clockkk",
       "type": "structure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "clockkk",
       "metadata": {
         "files": [
@@ -273,7 +273,46 @@
       "registry_name": "s_sturctures",
       "metadata": {
         "files": [
-          "src/main/java/net/mcreator/antipiracyjar/SSturctures.java"
+          "src/main/java/net/mcreator/antipiracyjar/SSturctures.java",
+          "src/main/resources/data/anti_piracyjar/structure/beta_abandoned_inn.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_cobble_bunker.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_farmstead.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_mining_camp.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_small_town.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_starter_home.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_storage_yard.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_unfinished_settlement.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_watchtower.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_workshop.nbt",
+          "src/main/resources/data/anti_piracyjar/tags/worldgen/biome/has_beta_remnants.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_abandoned_inn.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_cobble_bunker.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_farmstead.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_mining_camp.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_small_town.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_starter_home.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_storage_yard.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_unfinished_settlement.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_watchtower.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_workshop.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/shouse.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/sstair.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure_set/beta_remnants.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure_set/clockkk.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure_set/herobrine.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure_set/portal.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_abandoned_inn.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_cobble_bunker.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_farmstead.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_mining_camp.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_small_town.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_starter_home.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_storage_yard.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_unfinished_settlement.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_watchtower.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_workshop.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/shouse.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/sstair.json"
         ]
       }
     },
@@ -488,6 +527,66 @@
       "metadata": {
         "files": [
           "src/main/java/net/mcreator/antipiracyjar/VhsReadableGui.java"
+        ]
+      }
+    },
+    {
+      "name": "EnglishLanguageMixin",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "english_language_mixin",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/EnglishLanguageMixin.java"
+        ]
+      }
+    },
+    {
+      "name": "FabulousGraphicsStartup",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "fabulous_graphics_startup",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/FabulousGraphicsStartup.java"
+        ]
+      }
+    },
+    {
+      "name": "BetaTerrainMixin",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "beta_terrain_mixin",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/mixin/BetaTerrainMixin.java"
+        ]
+      }
+    },
+    {
+      "name": "StoneHuntEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "stone_hunt_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/StoneHuntEvent.java"
+        ]
+      }
+    },
+    {
+      "name": "StoneAccessMixin",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "stone_access_mixin",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/mixin/StoneAccessMixin.java"
         ]
       }
     }

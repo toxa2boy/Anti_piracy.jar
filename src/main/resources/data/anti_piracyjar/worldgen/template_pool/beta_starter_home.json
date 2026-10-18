@@ -1,0 +1,15 @@
+{
+  "name": "anti_piracyjar:beta_starter_home",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "anti_piracyjar:beta_starter_home",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

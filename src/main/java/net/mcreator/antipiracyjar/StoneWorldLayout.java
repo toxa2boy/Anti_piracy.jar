@@ -43,7 +43,10 @@ final class StoneWorldLayout {
             kind = start ? 0 : number(salt, 0, VARIANTS);
             width = start ? 11 : 6 + number(salt, 35, 10);
             depth = start ? 12 : 6 + number(salt, 44, 10);
-            height = 6 + number(salt, 51, 11);
+            height = start ? 8 : switch (kind) {
+                case 0, 1, 2, 5, 6, 7, 14, 19, 20, 24 -> 6 + number(salt, 51, 7);
+                default -> 3 + number(salt, 51, 8);
+            };
             rotation = start ? 0 : number(salt, 24, 4);
             shape = start ? 0 : number(salt, 31, 5);
         }
@@ -103,7 +106,7 @@ final class StoneWorldLayout {
                 int floor = (int) Math.round(af + (bf - af) * t);
                 double radius = main ? (0.32 + 0.9 * (0.5 + 0.5 * Math.sin(t * 17 + (salt & 31)))) : 0.55;
                 double roofWave = 0.5 + 0.5 * Math.sin(t * 23 + number(salt, 20, 19));
-                int height = main ? Math.max(af != bf ? 3 : 2, 2 + (int) (roofWave * 4)) : (t > 0.6 ? 1 : 2 + (int) (roofWave * 2));
+                int height = main ? 2 + (roofWave > 0.7 ? 1 : 0) : (t > 0.6 ? 1 : 2 + (int) (roofWave * 2));
                 while (px != x || pz != z) {
                     if (px != x) px += Integer.signum(x - px); else pz += Integer.signum(z - pz);
                     pf += Integer.signum(floor - pf);
@@ -140,7 +143,7 @@ final class StoneWorldLayout {
             x = rotation == 0 ? dx : rotation == 1 ? dz : rotation == 2 ? -dx : -dz;
             z = rotation == 0 ? dz : rotation == 1 ? -dx : rotation == 2 ? -dz : dx;
             bottom = room == null ? 40 : room.floor;
-            top = room == null ? 40 : room.floor + Math.max(4, room.height - (int) (best * best * (room.shape == 0 ? 0 : 4))
+            top = room == null ? 40 : room.floor + Math.max(3, room.height - (int) (best * best * (room.shape == 0 ? 0 : 4))
                     + (int) Math.round(Math.sin(wx * .37) * Math.cos(wz * .31)));
             boolean center = false;
             for (Point p : region.points) {
@@ -163,12 +166,18 @@ final class StoneWorldLayout {
                 tunnelFloor = Math.min(tunnelFloor, p.floor);
                 tunnelTop = Math.max(tunnelTop, p.floor + p.height);
             }
+            int tunnelProfile = number(hash(Math.floorDiv(wx, 6), Math.floorDiv(wz, 6), seed + 2081), 12, 3);
+            boolean steps = false;
+            for (Point p : tunnels) if (p.main && p.floor != tunnelFloor) steps = true;
+            if (main && room == null) tunnelTop = tunnelFloor + (steps || tunnelProfile == 2 ? 3 : 2);
             if (main && y == tunnelFloor) return STONE;
             if (tunnelFloor != Integer.MAX_VALUE && y > tunnelFloor && y <= tunnelTop) {
                 if (main || room == null) {
                     if (room == null) {
                         int clearance = tunnelTop - tunnelFloor;
-                        if (y == tunnelTop && clearance >= 4) {
+                        if (y == tunnelTop && clearance == 2 && tunnelProfile == 0 && !steps)
+                            return Blocks.STONE_SLAB.defaultBlockState().setValue(BlockStateProperties.SLAB_TYPE, SlabType.TOP);
+                        if (y == tunnelTop && clearance >= 3 && !centerline) {
                             int roof = number(texture, 8, 6);
                             if (roof == 0) return STONE;
                             if (roof == 1 || roof == 2) return Blocks.STONE_SLAB.defaultBlockState().setValue(BlockStateProperties.SLAB_TYPE, SlabType.TOP);

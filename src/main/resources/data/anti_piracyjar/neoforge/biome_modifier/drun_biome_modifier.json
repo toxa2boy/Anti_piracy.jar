@@ -1,12 +1,10 @@
 {
   "type": "neoforge:add_spawns",
-  "biomes": {
-    "type": "neoforge:any"
-  },
+  "biomes": "anti_piracyjar:kamnibiom",
   "spawners": {
     "type": "anti_piracyjar:drun",
-    "weight": 20,
-    "minCount": 4,
-    "maxCount": 4
+    "weight": 3,
+    "minCount": 1,
+    "maxCount": 1
   }
 }

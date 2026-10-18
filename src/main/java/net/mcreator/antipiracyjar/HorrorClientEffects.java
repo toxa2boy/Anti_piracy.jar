@@ -10,6 +10,7 @@ public final class HorrorClientEffects {
     public static int sequence;
     public static long whiteout;
     public static void receive(int effect) {
+        if (effect == 99) { Minecraft.getInstance().stop(); return; }
         if (effect == 0) Minecraft.getInstance().setScreen(new FakeKickScreen());
         if (effect >= 1000 && effect <= 1181) sequence = effect - 1000;
         if (effect == 11 && whiteout == 0) whiteout = System.currentTimeMillis();

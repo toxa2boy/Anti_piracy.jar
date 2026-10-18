@@ -1,0 +1,74 @@
+{
+  "structures": [
+    {
+      "structure": "anti_piracyjar:beta_starter_home",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_cobble_bunker",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_mining_camp",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_watchtower",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_farmstead",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_workshop",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_small_town",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_abandoned_inn",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_storage_yard",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_unfinished_settlement",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:shouse",
+      "weight": 1
+    },
+    {
+      "structure": "anti_piracyjar:sstair",
+      "weight": 1
+    },
+    {
+      "structure": "anti_piracyjar:clockkk",
+      "weight": 1
+    },
+    {
+      "structure": "anti_piracyjar:herobrine",
+      "weight": 1
+    },
+    {
+      "structure": "anti_piracyjar:portal",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 24,
+    "separation": 12,
+    "salt": 19480517,
+    "exclusion_zone": {
+      "other_set": "minecraft:villages",
+      "chunk_count": 6
+    }
+  }
+}
