@@ -13,33 +13,29 @@ authors="Main devs: Vapsig, FLYover67"
 description="You bought your first second-hand computer. The seller said Minecraft was already installed. Among the old files and pirated games, you find a world left behind by the previous owner. The owner is dead. At first, the strange errors seem like nothing more than problems with a pirated copy. You launch the game. It\u2019s still waiting for him.."
 
 # Start of user code block mod configuration
-[[mixins]]
-config="mixins.anti_piracyjar.json"
-[[mixins]]
-config="anti_piracyjar.amano.mixins.json"
 # End of user code block mod configuration
 
 [[dependencies.anti_piracyjar]]
-modId="neoforge"
-type="required"
-versionRange="[21.1.65,)"
-ordering="AFTER"
-side="BOTH"
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1.65,)"
+    ordering="AFTER"
+    side="BOTH"
 
 [[dependencies.anti_piracyjar]]
-modId="minecraft"
-type="required"
-versionRange="[1.21.1]"
-ordering="AFTER"
-side="BOTH"
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21.1]"
+    ordering="AFTER"
+    side="BOTH"
 
 
 [[dependencies.anti_piracyjar]]
-modId="geckolib"
-type="optional"
-versionRange="[0,)"
-ordering="NONE"
-side="BOTH"
+    modId="geckolib"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 
 
 # Start of user code block dependencies configuration
