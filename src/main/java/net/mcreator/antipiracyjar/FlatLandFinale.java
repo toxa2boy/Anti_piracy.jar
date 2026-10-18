@@ -100,6 +100,16 @@ public final class FlatLandFinale {
         player.server.getPlayerList().saveAll();
     }
 
+    @SubscribeEvent
+    public static void clonePlayer(PlayerEvent.Clone event) {
+        var original = event.getOriginal().getPersistentData();
+        var replacement = event.getEntity().getPersistentData();
+        for (String key : original.getAllKeys()) {
+            if (key.startsWith("antipiracyjar_") || key.startsWith("AntiPiracy") || key.startsWith("PiracyDream")
+                    || key.startsWith("PreDream") || key.startsWith("Struct")) replacement.put(key, original.get(key).copy());
+        }
+    }
+
     public record VideoPayload(boolean play) implements CustomPacketPayload {
         public static final Type<VideoPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "final_video"));
         public static final StreamCodec<ByteBuf, VideoPayload> CODEC = ByteBufCodecs.BOOL.map(VideoPayload::new, VideoPayload::play);

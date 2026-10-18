@@ -38,27 +38,18 @@ public class AmbientEvent {
             return;
         }
 
-        if (ticksRemaining > 0) {
-            ticksRemaining--;
-        }
-
-        if (ticksRemaining > 0) {
-            return;
-        }
-
-        List<ServerPlayer> players = event.getServer()
-                .getPlayerList()
-                .getPlayers()
-                .stream()
-                .filter(player -> player.isAlive() && !player.isSpectator())
-                .toList();
-
+        var state = HorrorWorldState.get(event.getServer());
+        if (state.data.getBoolean("ambientDone")) return;
+        if (event.getServer().overworld().getGameTime() < COOLDOWN_TICKS) return;
+        List<ServerPlayer> players = ClientEventHandler.targets(event.getServer());
         if (players.isEmpty()) {
             return;
         }
 
         RandomSource random = event.getServer().overworld().getRandom();
-        ServerPlayer player = players.get(random.nextInt(players.size()));
+        state.data.putBoolean("ambientDone", true);
+        state.flush(event.getServer());
+        for (ServerPlayer player : players) {
 
         double angle = random.nextDouble() * Math.PI * 2.0;
         double distance = 5.0 + random.nextDouble() * 5.0;
@@ -78,6 +69,6 @@ public class AmbientEvent {
                 random.nextLong()
         ));
 
-        ticksRemaining = COOLDOWN_TICKS;
+        }
     }
 }

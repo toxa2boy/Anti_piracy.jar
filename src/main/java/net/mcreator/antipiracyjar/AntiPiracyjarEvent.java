@@ -44,23 +44,22 @@ public class AntiPiracyjarEvent {
     private static final long DAYTIME_LIMIT = 12000L;
 
     @SubscribeEvent
-    public static void onRegisterCommands(RegisterCommandsEvent event) {
-        event.getDispatcher().register(
-            Commands.literal("anti_piracy_finish_messages")
-                .then(Commands.argument("day", LongArgumentType.longArg(0))
-                    .executes(context -> {
-                        if (context.getSource().getEntity() instanceof ServerPlayer player) {
-                            long day = LongArgumentType.getLong(context, "day");
-                            if (!player.getPersistentData().getBoolean("AntiPiracyMessagesFinished")) {
-                                player.getPersistentData().putBoolean("AntiPiracyMessagesFinished", true);
-                                player.getPersistentData().putLong("AntiPiracyMessagesFinishedDay", day);
-                            }
-                        }
-                        return 1;
-                    }))
-        );
+    public static void choose(net.neoforged.neoforge.event.tick.ServerTickEvent.Post event) {
+        var server = event.getServer();
+        if (server.overworld().getGameTime() % 20 != 0) return;
+        var world = HorrorWorldState.get(server);
+        if (!world.data.getBoolean("messagesFinished") || world.data.getBoolean("pirateDone")) return;
+        if (server.overworld().getDayTime() / 24000 < world.data.getLong("messagesFinishedDay") + 1 || !server.overworld().isDay()) return;
+        var targets = net.mcreator.antipiracyjar.ClientEventHandler.targets(server);
+        if (targets.isEmpty()) return;
+        world.data.putBoolean("pirateDone", true);
+        for (ServerPlayer player : targets) world.data.putBoolean("pirateSelected_" + player.getUUID(), true);
+        world.flush(server);
     }
-
+    @SubscribeEvent
+    public static void stopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) {
+        locked.clear(); pos.clear(); yaw.clear(); pitch.clear(); spawned.clear(); sequenceTicks.clear(); eventTriggered.clear();
+    }
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         UUID id = event.getEntity().getUUID();
@@ -76,7 +75,8 @@ public class AntiPiracyjarEvent {
         pos.remove(id);
         yaw.remove(id);
         pitch.remove(id);
-        spawned.remove(id);
+        Entity old = spawned.remove(id);
+        if (old != null) old.discard();
         sequenceTicks.remove(id);
         eventTriggered.remove(id);
     }
@@ -88,12 +88,14 @@ public class AntiPiracyjarEvent {
         }
 
         if (player.getPersistentData().getBoolean(FlatLandFinale.DONE)) return;
+        if (!player.level().dimension().equals(net.minecraft.world.level.Level.OVERWORLD)) return;
         UUID id = player.getUUID();
         int seq = sequenceTicks.getOrDefault(id, 0);
 
         if (seq > 0) {
             seq++;
             sequenceTicks.put(id, seq);
+            if (seq % 20 == 0) net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new HorrorNetwork.EffectPayload(1000 + seq));
 
             if (seq == 181) {
                 MinecraftServer server = player.getServer();
@@ -123,9 +125,9 @@ public class AntiPiracyjarEvent {
                 spawned.remove(id);
             } else {
                 Vec3 dir = new Vec3(player.getX() - pirate.getX(), (player.getY() + player.getEyeHeight() / 2) - (pirate.getY() + pirate.getEyeHeight() / 2), player.getZ() - pirate.getZ()).normalize();
-                
+
                 pirate.setPos(pirate.getX() + dir.x * 0.15, pirate.getY() + dir.y * 0.15, pirate.getZ() + dir.z * 0.15);
-                
+
                 pirate.setYRot((float) (Mth.atan2(dir.z, dir.x) * (180F / Math.PI)) - 90.0F);
                 pirate.setXRot((float) (-(Mth.atan2(dir.y, Math.sqrt(dir.x * dir.x + dir.z * dir.z)) * (180F / Math.PI))));
 
@@ -134,6 +136,7 @@ public class AntiPiracyjarEvent {
                     locked.put(id, false);
                     spawned.remove(id);
                     sequenceTicks.put(id, 1);
+                    net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new HorrorNetwork.EffectPayload(1001));
                 }
             }
             return;
@@ -141,18 +144,12 @@ public class AntiPiracyjarEvent {
 
         if (eventTriggered.getOrDefault(id, false)) return;
 
-        boolean messagesFinished = player.getPersistentData().getBoolean("AntiPiracyMessagesFinished");
-        if (!messagesFinished) return;
-
-        ServerLevel level = (ServerLevel) player.level();
-        long dayTime = level.getDayTime();
-        long currentDay = dayTime / 24000L;
-        long timeOfDay = dayTime % 24000L;
-        long finishedDay = player.getPersistentData().getLong("AntiPiracyMessagesFinishedDay");
-
-        boolean isDaytime = level.isDay() && timeOfDay < DAYTIME_LIMIT;
-
-        if (currentDay >= finishedDay + 1L && isDaytime) {
+        var world = HorrorWorldState.get(player.server);
+        if (!world.data.getBoolean("pirateSelected_" + id) || world.data.getBoolean("pirateStarted_" + id)) return;
+        ServerLevel level = player.serverLevel();
+        {
+            world.data.putBoolean("pirateStarted_" + id, true);
+            world.flush(player.server);
             eventTriggered.put(id, true);
 
             Vec3 look = player.getLookAngle();
@@ -166,9 +163,9 @@ public class AntiPiracyjarEvent {
                 pirat.setPos(x, y, z);
                 pirat.noPhysics = true;
                 pirat.setNoGravity(true);
-                
+
                 level.addFreshEntity(pirat);
-                
+
                 level.playSound(null, player.blockPosition(), SoundEvents.AMBIENT_CAVE.value(), SoundSource.AMBIENT, 1.0F, 1.0F);
 
                 locked.put(id, true);
@@ -189,7 +186,7 @@ public class AntiPiracyjarEvent {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player == null) return;
             UUID id = mc.player.getUUID();
-            int t = sequenceTicks.getOrDefault(id, 0);
+            int t = HorrorClientEffects.sequence;
 
             if (t >= 100 && t <= 180) {
                 GuiGraphics guiGraphics = event.getGuiGraphics();
@@ -202,7 +199,7 @@ public class AntiPiracyjarEvent {
                     int color = (t % 4 < 2) ? 0xFF0000 : 0x550000;
                     float shakeX = (float) (Math.random() - 0.5) * 6.0F;
                     float shakeY = (float) (Math.random() - 0.5) * 6.0F;
-                    
+
                     guiGraphics.pose().pushPose();
                     guiGraphics.pose().translate(w / 2.0F + shakeX, h / 2.0F + shakeY, 0);
                     guiGraphics.pose().scale(3.0F, 3.0F, 1.0F);

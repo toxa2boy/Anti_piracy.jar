@@ -47,6 +47,87 @@ import java.util.UUID;
 @EventBusSubscriber
 public class FlatLandTreeScript {
 
+    private static net.minecraft.server.MinecraftServer loadedServer;
+    private static void loadState(net.minecraft.server.MinecraftServer server) {
+        if (loadedServer == server) return;
+        loadedServer = server;
+        var tag = HorrorWorldState.get(server).data.getCompound("flatScene");
+        playersSpawnedTree.clear(); remainingTreeLogs.clear(); houseDoors.clear();
+        currentTreePos = tag.contains("currentTreePos") ? BlockPos.of(tag.getLong("currentTreePos")) : null;
+        signPos = tag.contains("signPos") ? BlockPos.of(tag.getLong("signPos")) : null;
+        houseMinPos = tag.contains("houseMinPos") ? BlockPos.of(tag.getLong("houseMinPos")) : null;
+        houseMaxPos = tag.contains("houseMaxPos") ? BlockPos.of(tag.getLong("houseMaxPos")) : null;
+        treeDirection = tag.contains("treeDirection") ? Direction.from3DDataValue(tag.getInt("treeDirection")) : null;
+        signFacing = tag.contains("signFacing") ? Direction.from3DDataValue(tag.getInt("signFacing")) : null;
+        treeChopped = tag.getBoolean("treeChopped");
+        structureSpawned = tag.getBoolean("structureSpawned");
+        structureMusicStarted = tag.getBoolean("structureMusicStarted");
+        scriptActivated = tag.getBoolean("scriptActivated");
+        doorReplaced = tag.getBoolean("doorReplaced");
+        secondPhaseTriggered = tag.getBoolean("secondPhaseTriggered");
+        finalSoundStopped = tag.getBoolean("finalSoundStopped");
+        blocksPlacedCount = tag.getInt("blocksPlacedCount");
+        insideTicksCounter = tag.getInt("insideTicksCounter");
+        scriptTimer = tag.getInt("scriptTimer");
+        for (long pos : tag.getLongArray("logs")) remainingTreeLogs.add(BlockPos.of(pos));
+        for (long pos : tag.getLongArray("doors")) houseDoors.add(BlockPos.of(pos));
+    }
+    private static void saveState(net.minecraft.server.MinecraftServer server) {
+        var state = HorrorWorldState.get(server);
+        var tag = new net.minecraft.nbt.CompoundTag();
+        if (currentTreePos != null) tag.putLong("currentTreePos", currentTreePos.asLong());
+        if (signPos != null) tag.putLong("signPos", signPos.asLong());
+        if (houseMinPos != null) tag.putLong("houseMinPos", houseMinPos.asLong());
+        if (houseMaxPos != null) tag.putLong("houseMaxPos", houseMaxPos.asLong());
+        if (treeDirection != null) tag.putInt("treeDirection", treeDirection.get3DDataValue());
+        if (signFacing != null) tag.putInt("signFacing", signFacing.get3DDataValue());
+        tag.putBoolean("treeChopped", treeChopped);
+        tag.putBoolean("structureSpawned", structureSpawned);
+        tag.putBoolean("structureMusicStarted", structureMusicStarted);
+        tag.putBoolean("scriptActivated", scriptActivated);
+        tag.putBoolean("doorReplaced", doorReplaced);
+        tag.putBoolean("secondPhaseTriggered", secondPhaseTriggered);
+        tag.putBoolean("finalSoundStopped", finalSoundStopped);
+        tag.putInt("blocksPlacedCount", blocksPlacedCount);
+        tag.putInt("insideTicksCounter", insideTicksCounter);
+        tag.putInt("scriptTimer", scriptTimer);
+        tag.putLongArray("logs", remainingTreeLogs.stream().mapToLong(BlockPos::asLong).toArray());
+        tag.putLongArray("doors", houseDoors.stream().mapToLong(BlockPos::asLong).toArray());
+        if (!tag.equals(state.data.getCompound("flatScene"))) { state.data.put("flatScene", tag); state.setDirty(); }
+    }
+    @SubscribeEvent
+    public static void stopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) { loadedServer = null; }
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (!player.level().dimension().location().equals(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "flat_land"))) return;
+        loadState(player.server);
+        if (player.getPersistentData().getBoolean("PiracyDreamActive")) return;
+        if (scriptTimer >= FINAL_SIGN_TICK) {
+            player.getPersistentData().putBoolean(FINAL_SIGN_KEY, true);
+            if (player.tickCount % 20 == 0) net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new HorrorNetwork.EffectPayload(11));
+        }
+        var driver = player.serverLevel().players().stream().filter(p -> p.isAlive() && !p.isSpectator()
+                && !p.getPersistentData().getBoolean("PiracyDreamActive"))
+                .min(java.util.Comparator.comparingDouble(p -> houseMinPos == null ? 0 : p.blockPosition().distSqr(houseMinPos.offset(10, 1, 10)))).orElse(null);
+        if (driver != player) return;
+        try { tickScene(event); } finally { saveState(player.server); }
+    }
+    @SubscribeEvent
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        if (!level.dimension().location().equals(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "flat_land"))) return;
+        loadState(level.getServer());
+        try { breakScene(event); } finally { saveState(level.getServer()); }
+    }
+    @SubscribeEvent
+    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        if (!level.dimension().location().equals(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "flat_land"))) return;
+        loadState(level.getServer());
+        try { placeScene(event); } finally { saveState(level.getServer()); }
+    }
+
     private static final Set<UUID> playersSpawnedTree = new HashSet<>();
     private static final Set<BlockPos> remainingTreeLogs = new HashSet<>();
     private static BlockPos currentTreePos = null;
@@ -70,14 +151,14 @@ public class FlatLandTreeScript {
     private static boolean secondPhaseTriggered = false;
     private static boolean finalSoundStopped = false;
 
-    
+
     private static final int WHITE_SKY_TICK = 650;   
     private static final int FINAL_SIGN_TICK = 650;  
     private static final String FINAL_SIGN_KEY = "antipiracyjar_final_sign";
-    
+
     private static volatile long whiteoutStartMillis = 0L;
 
-    
+
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         UUID id = event.getEntity().getUUID();
@@ -88,8 +169,7 @@ public class FlatLandTreeScript {
         }
     }
 
-    @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Post event) {
+    private static void tickScene(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         if (!(player.level() instanceof ServerLevel level)) return;
 
@@ -98,9 +178,7 @@ public class FlatLandTreeScript {
 
         UUID uuid = player.getUUID();
 
-        
-        
-        if (!playersSpawnedTree.contains(uuid) && player.tickCount % 20 == 0) {
+        if (currentTreePos == null && player.tickCount % 20 == 0) {
             Direction facing = player.getDirection();
             BlockPos targetPos = player.blockPosition().relative(facing, 30);
 
@@ -111,7 +189,7 @@ public class FlatLandTreeScript {
                 buildManualOakTree(level, groundPos);
 
                 playersSpawnedTree.add(uuid);
-                
+
                 player.getPersistentData().putBoolean("antipiracyjar_tree_spawned", true);
                 currentTreePos = groundPos;
                 treeDirection = facing;
@@ -128,10 +206,10 @@ public class FlatLandTreeScript {
 
             if (isInsideStructureArea && !structureMusicStarted) {
                 structureMusicStarted = true;
-                
+
                 level.getServer().getCommands().performPrefixedCommand(
                         level.getServer().createCommandSourceStack().withSuppressedOutput(),
-                        "stopsound @a"
+                        "stopsound " + player.getScoreboardName()
                 );
 
                 SoundEvent distortedMusic = SoundEvent.createVariableRangeEvent(
@@ -143,7 +221,7 @@ public class FlatLandTreeScript {
             if (!houseDoors.isEmpty()) {
                 BlockPos primaryDoor = houseDoors.get(0);
 
-                
+
                 boolean isInsideRoom = pPos.getX() >= houseMinPos.getX() + 8 && pPos.getX() <= houseMinPos.getX() + 13 &&
                                        pPos.getY() >= houseMinPos.getY()     && pPos.getY() <= houseMinPos.getY() + 4  &&
                                        pPos.getZ() >= houseMinPos.getZ() + 8 && pPos.getZ() <= houseMinPos.getZ() + 13 &&
@@ -163,7 +241,7 @@ public class FlatLandTreeScript {
                 }
 
                 if (scriptActivated) {
-                    scriptTimer++;
+                    if (scriptTimer < FINAL_SIGN_TICK + 1) scriptTimer++;
 
                     if (scriptTimer == 1) {
                         if (!doorReplaced) {
@@ -213,9 +291,9 @@ public class FlatLandTreeScript {
                         for (BlockPos pos : houseDoors) {
                             level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
                         }
-                        
+
                         level.setBlock(houseMinPos.offset(13, 4, 8), Blocks.AIR.defaultBlockState(), 3);
-                        
+
                         level.setBlock(houseMinPos.offset(11, 1, 9), Blocks.AIR.defaultBlockState(), 3);
 
                         BlockPos finalSignPos = houseMinPos.offset(12, 1, -7);
@@ -230,11 +308,9 @@ public class FlatLandTreeScript {
                         }
                     }
 
-                    
-                    
                     if (scriptTimer == 550) {
                         BlockPos videoSignPos = houseMinPos.offset(6, 1, 1);
-                        
+
                         level.setBlock(videoSignPos, Blocks.OAK_SIGN.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, 8), 3);
                         BlockEntity videoSignBe = level.getBlockEntity(videoSignPos);
                         if (videoSignBe instanceof SignBlockEntity videoSign) {
@@ -246,15 +322,15 @@ public class FlatLandTreeScript {
                         }
                     }
 
-                    
+
                     if (scriptTimer == WHITE_SKY_TICK) {
                         whiteoutStartMillis = System.currentTimeMillis();
                     }
 
-                    
+
                     if (scriptTimer == FINAL_SIGN_TICK) {
                         BlockPos digSignPos = houseMinPos.offset(4, 1, -14);
-                        
+
                         level.setBlock(digSignPos, Blocks.OAK_SIGN.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, 0), 3);
                         BlockEntity digSignBe = level.getBlockEntity(digSignPos);
                         if (digSignBe instanceof SignBlockEntity digSign) {
@@ -270,7 +346,7 @@ public class FlatLandTreeScript {
                     if (scriptTimer >= 410 && !isInsideRoom && !finalSoundStopped) {
                         level.getServer().getCommands().performPrefixedCommand(
                                 level.getServer().createCommandSourceStack().withSuppressedOutput(),
-                                "stopsound @a"
+                                "stopsound " + player.getScoreboardName()
                         );
                         finalSoundStopped = true;
                     }
@@ -312,7 +388,7 @@ public class FlatLandTreeScript {
         }
 
         BlockPos sign2Pos = houseMinPos.offset(12, 2, 12); 
-        
+
         level.setBlock(sign2Pos, Blocks.OAK_WALL_SIGN.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST), 3);
 
         BlockEntity be2 = level.getBlockEntity(sign2Pos);
@@ -391,8 +467,7 @@ public class FlatLandTreeScript {
         }
     }
 
-    @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+    private static void breakScene(BlockEvent.BreakEvent event) {
         if (event.getLevel() instanceof ServerLevel level) {
             String dimPath = level.dimension().location().getPath();
             if (!dimPath.equals("flat_land")) return;
@@ -459,8 +534,7 @@ public class FlatLandTreeScript {
         }
     }
 
-    @SubscribeEvent
-    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+    private static void placeScene(BlockEvent.EntityPlaceEvent event) {
         if (signPos == null || structureSpawned) return;
 
         if (event.getEntity() instanceof Player player && event.getLevel() instanceof ServerLevel level) {
@@ -521,9 +595,9 @@ public class FlatLandTreeScript {
 
     @EventBusSubscriber(value = Dist.CLIENT)
     public static class FogHandler {
-        
+
         private static float whiteProgress() {
-            long start = whiteoutStartMillis;
+            long start = HorrorClientEffects.whiteout;
             if (start <= 0L) return 0.0F;
             return Mth.clamp((System.currentTimeMillis() - start) / 2000.0F, 0.0F, 1.0F);
         }
@@ -536,7 +610,7 @@ public class FlatLandTreeScript {
                 float far = 40.0F;
                 float p = whiteProgress();
                 if (p > 0.0F && event.getMode() == FogRenderer.FogMode.FOG_SKY) {
-                    
+
                     near = 15.0F * (1.0F - p);
                     far = 40.0F - 39.0F * p;
                 }
@@ -546,8 +620,6 @@ public class FlatLandTreeScript {
             }
         }
 
-        
-        
         private static final float GLARE_MAX_ALPHA = 0.6F;
 
         @SubscribeEvent

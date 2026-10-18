@@ -183,10 +183,7 @@ public class Piracydream {
                     endDream(player, false);
                 }
 
-                AdvancementHolder sleepAdv = player.getServer().getAdvancements().get(ResourceLocation.fromNamespaceAndPath("minecraft", "adventure/sleep_in_bed"));
-                if (sleepAdv != null && !player.getAdvancements().getOrStartProgress(sleepAdv).isDone()) {
-                    player.getPersistentData().putBoolean("PiracyDreamHad", false);
-                }
+
             }
         }
 
@@ -195,7 +192,7 @@ public class Piracydream {
             if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer player) {
                 CompoundTag data = player.getPersistentData();
 
-                if (data.getBoolean("PiracyDreamHad") || data.getBoolean(DREAM_ACTIVE_KEY)) {
+                if (!player.level().dimension().equals(Level.OVERWORLD) || HorrorWorldState.get(player.server).data.getBoolean("dreamDone") || data.getBoolean("PiracyDreamHad") || data.getBoolean(DREAM_ACTIVE_KEY)) {
                     return;
                 }
 
@@ -204,6 +201,9 @@ public class Piracydream {
                     return;
                 }
 
+                var worldState = HorrorWorldState.get(player.server);
+                worldState.data.putBoolean("dreamDone", true);
+                worldState.flush(player.server);
                 data.putBoolean("PiracyDreamHad", true);
                 data.putString("PreDreamDim", player.level().dimension().location().toString());
                 data.putDouble("PreDreamX", player.getX());

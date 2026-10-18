@@ -39,10 +39,16 @@ public class HorrorFontFinishEvent {
         public static void register(RegisterPayloadHandlersEvent event) {
             event.registrar("1").playToServer(WarningClosedPayload.TYPE, WarningClosedPayload.CODEC,
                     (payload, context) -> context.enqueueWork(() -> {
-                        if (payload.closed() && context.player() instanceof ServerPlayer player
-                                && handled.add(player.getUUID()) && remaining < 0) {
-                            remaining = 200;
-                            com.mojang.logging.LogUtils.getLogger().info("[Amano] Warning closed; starting 200-tick timer");
+                        if (payload.closed() && context.player() instanceof ServerPlayer player) {
+                            var state = HorrorWorldState.get(player.server);
+                            if (state.data.getBoolean("warning_" + player.getUUID()) && !state.data.getBoolean("fontEnabled")) {
+                                long due = player.server.overworld().getGameTime() + 200;
+                                long previous = state.data.getLong("fontDue");
+                                if (previous == 0 || due < previous) {
+                                    state.data.putLong("fontDue", due);
+                                    state.setDirty();
+                                }
+                            }
                         }
                     }));
             event.registrar("1").playToClient(FontFinishPayload.TYPE, FontFinishPayload.CODEC,
@@ -54,12 +60,21 @@ public class HorrorFontFinishEvent {
 
     @SubscribeEvent
     public static void tick(ServerTickEvent.Post event) {
-        if (remaining > 0 && --remaining == 0) {
-            remaining = -1;
-            com.mojang.logging.LogUtils.getLogger().info("[Amano] Broadcasting chat clear and font activation");
+        var state = HorrorWorldState.get(event.getServer());
+        long due = state.data.getLong("fontDue");
+        if (!state.data.getBoolean("fontEnabled") && due > 0 && event.getServer().overworld().getGameTime() >= due) {
+            state.data.putBoolean("fontEnabled", true);
+            state.flush(event.getServer());
             for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
                 PacketDistributor.sendToPlayer(player, new FontFinishPayload(true));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void login(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && HorrorWorldState.get(player.server).data.getBoolean("fontEnabled")) {
+            PacketDistributor.sendToPlayer(player, new FontFinishPayload(true));
         }
     }
 

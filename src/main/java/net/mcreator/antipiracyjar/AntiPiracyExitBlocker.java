@@ -53,20 +53,12 @@ public class AntiPiracyExitBlocker {
                 CompletableFuture.runAsync(() -> {
                     try {
                         Thread.sleep(500);
-                        Minecraft.getInstance().execute(() -> {
-                            if (Minecraft.getInstance().player != null) {
-                                Minecraft.getInstance().player.playSound(SoundEvents.AMBIENT_CAVE.value(), 1.0F, 1.0F);
-                                Minecraft.getInstance().player.sendSystemMessage(
-                                        Component.literal("Did you really think that would work?").withStyle(ChatFormatting.RED)
-                                );
-                            }
-                        });
 
                         Thread.sleep(3000);
 
                         Minecraft.getInstance().execute(() -> {
                             if (Minecraft.getInstance().player != null) {
-                                SignMessages.placeCreepySign();
+                                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new HorrorNetwork.ExitPayload(true));
                             }
                         });
                     } catch (InterruptedException e) {
@@ -82,6 +74,10 @@ public class AntiPiracyExitBlocker {
         }
     }
 
+    @SubscribeEvent
+    public static void logout(net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
+        hasTriggered = false; textCleared = false;
+    }
     private static boolean isDisconnectButton(Component component) {
         if (component.getContents() instanceof TranslatableContents translatable) {
             String key = translatable.getKey();

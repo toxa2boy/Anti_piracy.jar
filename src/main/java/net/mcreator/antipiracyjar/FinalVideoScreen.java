@@ -50,7 +50,7 @@ public final class FinalVideoScreen extends Screen {
 
         public FinalVideoScreen() {
             super(Component.literal("Finale"));
-            
+
             preparation = FinalVideoSetup.prepare();
         }
 

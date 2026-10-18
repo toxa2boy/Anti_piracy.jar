@@ -39,7 +39,7 @@ public class WindowResolutionHandler {
         int currentWidth = window.getScreenWidth();
         int currentHeight = window.getScreenHeight();
 
-        // Каждый тик проверяем: если кто-то вышел из fullscreen или сменил разрешение — возвращаем как надо
+
         if (!isFullscreen || currentWidth != LOCKED_WIDTH || currentHeight != LOCKED_HEIGHT) {
             lockToResolution(handle);
         }

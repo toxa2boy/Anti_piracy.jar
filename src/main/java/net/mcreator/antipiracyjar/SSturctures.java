@@ -47,7 +47,8 @@ public class SSturctures {
                 return;
             }
 
-            ServerLevel level = player.serverLevel();
+            if (!player.level().dimension().equals(net.minecraft.world.level.Level.OVERWORLD)) return;
+            ServerLevel level = player.server.overworld();
             StructureWorldData data = StructureWorldData.get(level);
 
             if (data.isGenerated()) {

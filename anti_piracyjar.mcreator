@@ -308,7 +308,7 @@
       "name": "Kamniizmerenie",
       "type": "dimension",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "kamniizmerenie",
       "metadata": {
         "files": [
@@ -332,6 +332,162 @@
           "src/main/resources/data/anti_piracyjar/neoforge/biome_modifier/drun_biome_modifier.json",
           "src/main/java/net/mcreator/antipiracyjar/entity/DrunEntity.java",
           "src/main/java/net/mcreator/antipiracyjar/entity/model/DrunModel.java"
+        ]
+      }
+    },
+    {
+      "name": "AmanoFontController",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "amano_font_controller",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/AmanoFontController.java"
+        ]
+      }
+    },
+    {
+      "name": "EnglishLanguageStartup",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "english_language_startup",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/EnglishLanguageStartup.java"
+        ]
+      }
+    },
+    {
+      "name": "FinalVideoScreen",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "final_video_screen",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/FinalVideoScreen.java"
+        ]
+      }
+    },
+    {
+      "name": "FinalVideoSetup",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "final_video_setup",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/FinalVideoSetup.java"
+        ]
+      }
+    },
+    {
+      "name": "FlatLandFinale",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "flat_land_finale",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/FlatLandFinale.java"
+        ]
+      }
+    },
+    {
+      "name": "HorrorClientEffects",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "horror_client_effects",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/HorrorClientEffects.java"
+        ]
+      }
+    },
+    {
+      "name": "HorrorFontFinishEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "horror_font_finish_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/HorrorFontFinishEvent.java"
+        ]
+      }
+    },
+    {
+      "name": "HorrorNetwork",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "horror_network",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/HorrorNetwork.java"
+        ]
+      }
+    },
+    {
+      "name": "HorrorWorldState",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "horror_world_state",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/HorrorWorldState.java"
+        ]
+      }
+    },
+    {
+      "name": "LicenseCredits",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "license_credits",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/LicenseCredits.java"
+        ]
+      }
+    },
+    {
+      "name": "StoneWorldGenerator",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "stone_world_generator",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/StoneWorldGenerator.java"
+        ]
+      }
+    },
+    {
+      "name": "StoneWorldLayout",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "stone_world_layout",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/StoneWorldLayout.java"
+        ]
+      }
+    },
+    {
+      "name": "VhsReadableGui",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "vhs_readable_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/VhsReadableGui.java"
         ]
       }
     }

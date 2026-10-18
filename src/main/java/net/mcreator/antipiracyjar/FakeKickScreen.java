@@ -37,6 +37,9 @@ public class FakeKickScreen extends Screen {
     }
 
     @Override
+    public boolean isPauseScreen() { return false; }
+
+    @Override
     public void tick() {
         super.tick();
         ticksOpened++;

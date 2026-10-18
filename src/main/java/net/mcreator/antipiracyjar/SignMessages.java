@@ -1,6 +1,6 @@
 package net.mcreator.antipiracyjar;
 
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -43,35 +43,25 @@ public class SignMessages {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void placeCreepySign() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && mc.getSingleplayerServer() != null) {
-            MinecraftServer server = mc.getSingleplayerServer();
-            UUID playerId = mc.player.getUUID();
-            server.execute(() -> {
-                ServerPlayer serverPlayer = server.getPlayerList().getPlayer(playerId);
-                if (serverPlayer != null && serverPlayer.level() instanceof ServerLevel level) {
-                    Direction opposite = serverPlayer.getDirection().getOpposite();
-                    BlockPos pos = serverPlayer.blockPosition().relative(opposite);
-                    
-                    if (!level.isEmptyBlock(pos)) {
-                        pos = serverPlayer.blockPosition();
-                    }
-                    
-                    int rotation = Mth.floor(serverPlayer.getYRot() * 16.0F / 360.0F + 0.5D) & 15;
-                    level.setBlock(pos, Blocks.OAK_SIGN.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, rotation), 3);
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    
-                    if (blockEntity instanceof SignBlockEntity sign) {
-                        sign.updateText(text -> text
-                                .setMessage(0, Component.literal("I thought"))
-                                .setMessage(1, Component.literal("you wanted"))
-                                .setMessage(2, Component.literal("to play?"))
-                                .setMessage(3, Component.literal("")), true);
-                    }
-                }
-            });
+    public static void placeCreepySign(ServerPlayer serverPlayer) {
+        ServerLevel level = serverPlayer.serverLevel();
+        if (!level.dimension().equals(net.minecraft.world.level.Level.OVERWORLD)) return;
+        var state = HorrorWorldState.get(serverPlayer.server);
+        if (state.data.getBoolean("exitSignDone")) return;
+        state.data.putBoolean("exitSignDone", true);
+        state.flush(serverPlayer.server);
+        serverPlayer.sendSystemMessage(Component.literal("Did you really think that would work?")
+                .withStyle(net.minecraft.ChatFormatting.RED).withStyle(style -> style.withBold(false)));
+        serverPlayer.playNotifySound(net.minecraft.sounds.SoundEvents.AMBIENT_CAVE.value(), net.minecraft.sounds.SoundSource.AMBIENT, 1, 1);
+        Direction opposite = serverPlayer.getDirection().getOpposite();
+        BlockPos pos = serverPlayer.blockPosition().relative(opposite);
+        if (!level.getBlockState(pos).canBeReplaced()) return;
+        int rotation = Mth.floor(serverPlayer.getYRot() * 16.0F / 360.0F + 0.5D) & 15;
+        level.setBlock(pos, Blocks.OAK_SIGN.defaultBlockState().setValue(BlockStateProperties.ROTATION_16, rotation), 3);
+        if (level.getBlockEntity(pos) instanceof SignBlockEntity sign) {
+            sign.updateText(text -> text.setMessage(0, Component.literal("I thought"))
+                    .setMessage(1, Component.literal("you wanted"))
+                    .setMessage(2, Component.literal("to play?")), true);
         }
     }
 }

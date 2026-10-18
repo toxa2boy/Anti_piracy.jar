@@ -45,7 +45,16 @@ public class LoginHorrorEvent {
     private static final int KICK_AFTER_STRUCTURES = 5;
     private static final String CONNECTION_ERROR = "Connection error. Please try again.";
     private static final String ALREADY_ONLINE = "This player is already online.";
-    private static final Map<UUID, Integer> LOGIN_STAGES = new HashMap<>();
+    public static boolean isPending(ServerPlayer player) {
+        var tag = HorrorWorldState.get(player.server).data;
+        String key = "login_" + player.getUUID();
+        return tag.contains(key) && tag.getInt(key) < 3;
+    }
+    private static void stage(ServerPlayer player, int stage) {
+        var state = HorrorWorldState.get(player.server);
+        state.data.putInt("login_" + player.getUUID(), stage);
+        state.flush(player.server);
+    }
     private static final List<PendingAction> PENDING_ACTIONS = new ArrayList<>();
 
     public record HorrorDisconnectPayload(String reason) implements CustomPacketPayload {
@@ -105,7 +114,10 @@ public class LoginHorrorEvent {
 
         UUID playerId = player.getUUID();
         PENDING_ACTIONS.removeIf(action -> action.player.getUUID().equals(playerId));
-        int stage = LOGIN_STAGES.getOrDefault(playerId, 0);
+        var saved = HorrorWorldState.get(player.server).data;
+        String key = "login_" + playerId;
+        if (!saved.contains(key)) return;
+        int stage = saved.getInt(key);
 
         if (stage == 0) {
             PENDING_ACTIONS.add(new PendingAction(player, ActionType.BLIND_PLAYER, FIRST_KICK_DELAY));
@@ -125,6 +137,18 @@ public class LoginHorrorEvent {
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
+        var state = HorrorWorldState.get(event.getServer());
+        if (!state.data.getBoolean("loginChosen") && event.getServer().overworld().getGameTime() % 20 == 0) {
+            var selected = ClientEventHandler.targets(event.getServer());
+            if (!selected.isEmpty()) {
+                state.data.putBoolean("loginChosen", true);
+                for (ServerPlayer player : selected) {
+                    state.data.putInt("login_" + player.getUUID(), 0);
+                    PENDING_ACTIONS.add(new PendingAction(player, ActionType.BLIND_PLAYER, FIRST_KICK_DELAY));
+                }
+                state.flush(event.getServer());
+            }
+        }
         Iterator<PendingAction> iterator = PENDING_ACTIONS.iterator();
         while (iterator.hasNext()) {
             PendingAction action = iterator.next();
@@ -133,6 +157,7 @@ public class LoginHorrorEvent {
                 iterator.remove();
                 continue;
             }
+            if (!player.level().dimension().equals(net.minecraft.world.level.Level.OVERWORLD)) continue;
             if (--action.ticks > 0) {
                 continue;
             }
@@ -141,7 +166,7 @@ public class LoginHorrorEvent {
                 Component leaveMessage = Component.translatable("multiplayer.player.left", player.getDisplayName())
                         .withStyle(ChatFormatting.YELLOW);
                 player.server.getPlayerList().broadcastSystemMessage(leaveMessage, false);
-                LOGIN_STAGES.put(player.getUUID(), 3);
+                stage(player, 3);
 
                 iterator.remove();
             } else if (action.type == ActionType.BLIND_PLAYER) {
@@ -149,8 +174,8 @@ public class LoginHorrorEvent {
                 action.type = ActionType.START_SCENE;
                 action.ticks = BLINDNESS_BEFORE_STRUCTURES;
             } else if (action.type == ActionType.START_SCENE) {
+                stage(player, 1);
                 startScene(player);
-                LOGIN_STAGES.put(player.getUUID(), 1);
                 action.type = ActionType.FIRST_KICK;
                 action.ticks = KICK_AFTER_STRUCTURES;
             } else if (action.type == ActionType.FALLBACK_KICK) {
@@ -159,7 +184,7 @@ public class LoginHorrorEvent {
             } else {
                 boolean first = action.type == ActionType.FIRST_KICK;
                 action.reason = first ? CONNECTION_ERROR : ALREADY_ONLINE;
-                LOGIN_STAGES.put(player.getUUID(), first ? 1 : 2);
+                stage(player, first ? 1 : 2);
 
 
                 PacketDistributor.sendToPlayer(player, new HorrorDisconnectPayload(action.reason));
