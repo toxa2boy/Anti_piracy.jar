@@ -4,8 +4,6 @@ import net.minecraft.client.Minecraft;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -16,13 +14,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public final class FinalVideoSetup {
     public static final int FPS = 25;
 
-    private static final String DOWNLOAD_URL = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
     private static CompletableFuture<List<Path>> preparation;
 
     private FinalVideoSetup() {
@@ -81,7 +76,7 @@ public final class FinalVideoSetup {
             }
         }
 
-        installFFmpeg(executable);
+        requireFFmpeg(executable);
         Files.deleteIfExists(manifest);
         for (Path frame : existing) {
             Files.delete(frame);
@@ -116,41 +111,12 @@ public final class FinalVideoSetup {
         return extracted;
     }
 
-    private static void installFFmpeg(Path executable) throws IOException {
-        if (Files.isRegularFile(executable) && Files.size(executable) > 0) {
-            return;
-        }
-        if (!System.getProperty("os.name").toLowerCase(java.util.Locale.ROOT).contains("windows")) {
-            throw new IOException("This FFmpeg setup requires Windows");
-        }
-
-        Files.createDirectories(executable.getParent());
-        Path temporary = executable.resolveSibling("ffmpeg.exe.part");
-        URLConnection connection = URI.create(DOWNLOAD_URL).toURL().openConnection();
-        connection.setConnectTimeout(15000);
-        connection.setReadTimeout(60000);
-        connection.setRequestProperty("User-Agent", "AntiPiracyJar");
-
-        try (InputStream input = connection.getInputStream();
-             ZipInputStream archive = new ZipInputStream(input)) {
-            ZipEntry entry;
-            while ((entry = archive.getNextEntry()) != null) {
-                if (!entry.isDirectory() && entry.getName().endsWith("/bin/ffmpeg.exe")) {
-                    Files.copy(archive, temporary, StandardCopyOption.REPLACE_EXISTING);
-                    if (Files.size(temporary) == 0) {
-                        throw new IOException("Downloaded FFmpeg executable is empty");
-                    }
-                    Files.move(temporary, executable, StandardCopyOption.REPLACE_EXISTING);
-                    return;
-                }
-                archive.closeEntry();
-            }
-            throw new IOException("ffmpeg.exe was not found in the downloaded archive");
-        } finally {
-            Files.deleteIfExists(temporary);
+    private static void requireFFmpeg(Path executable) throws IOException {
+        if (!Files.isRegularFile(executable) || Files.size(executable) == 0) {
+            throw new IOException("FFmpeg is missing at " + executable.toAbsolutePath()
+                    + ". Initialize FFmpegLib before playing videos.");
         }
     }
-
     private static List<Path> listFrames(Path directory) throws IOException {
         try (var files = Files.list(directory)) {
             return files.filter(Files::isRegularFile)
