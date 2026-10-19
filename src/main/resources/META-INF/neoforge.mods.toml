@@ -16,40 +16,27 @@ description="You bought your first second-hand computer. The seller said Minecra
 # End of user code block mod configuration
 
 [[dependencies.anti_piracyjar]]
-modId="neoforge"
-type="required"
-versionRange="[21.1.65,)"
-ordering="AFTER"
-side="BOTH"
+    modId="neoforge"
+    type="required"
+    versionRange="[21.1.65,)"
+    ordering="AFTER"
+    side="BOTH"
 
 [[dependencies.anti_piracyjar]]
-modId="minecraft"
-type="required"
-versionRange="[1.21.1]"
-ordering="AFTER"
-side="BOTH"
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21.1]"
+    ordering="AFTER"
+    side="BOTH"
 
 
 [[dependencies.anti_piracyjar]]
-modId="geckolib"
-type="optional"
-versionRange="[0,)"
-ordering="NONE"
-side="BOTH"
+    modId="geckolib"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 
 
 # Start of user code block dependencies configuration
-[[dependencies.anti_piracyjar]]
-modId="ffmpeglib"
-type="required"
-versionRange="[0.6.9,)"
-ordering="AFTER"
-side="BOTH"
-
-[[dependencies.anti_piracyjar]]
-modId="ffmpeglibextra"
-type="required"
-versionRange="[1.0.0,)"
-ordering="AFTER"
-side="BOTH"
 # End of user code block dependencies configuration
