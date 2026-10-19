@@ -16,6 +16,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class StoneAccessMixin {
     @Shadow public abstract MinecraftServer getServer();
 
+    @Inject(method = "canPlayerLogin", at = @At("RETURN"), cancellable = true)
+    private void anti_piracyjar$rejectStoryLogin(SocketAddress address, GameProfile profile,
+            CallbackInfoReturnable<Component> callback) {
+        if (callback.getReturnValue() != null) return;
+        Component reason = net.mcreator.antipiracyjar.LoginHorrorEvent.rejectLogin(getServer(), profile.getId());
+        if (reason != null) callback.setReturnValue(reason);
+    }
+
     @Inject(method = "canPlayerLogin", at = @At("HEAD"), cancellable = true)
     private void anti_piracyjar$lockedWorld(SocketAddress address, GameProfile profile,
             CallbackInfoReturnable<Component> callback) {

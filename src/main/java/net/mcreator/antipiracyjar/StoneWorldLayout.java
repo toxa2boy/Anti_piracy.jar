@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.*;
 
 final class StoneWorldLayout {
-    static final int VARIANTS = 40;
+    static final int VARIANTS = 50;
     private record Key(int x, int z, long seed) { }
     private static final Map<Key, Region> CACHE = new LinkedHashMap<>(32, 0.75f, true);
     private static final BlockState STONE = Blocks.STONE.defaultBlockState();
@@ -43,12 +43,12 @@ final class StoneWorldLayout {
             kind = start ? 0 : number(salt, 0, VARIANTS);
             width = start ? 11 : 6 + number(salt, 35, 10);
             depth = start ? 12 : 6 + number(salt, 44, 10);
-            height = start ? 8 : switch (kind) {
+            height = kind >= 40 ? 8 + number(salt, 51, 4) : start ? 8 : switch (kind) {
                 case 0, 1, 2, 5, 6, 7, 14, 19, 20, 24 -> 6 + number(salt, 51, 7);
                 default -> 3 + number(salt, 51, 8);
             };
             rotation = start ? 0 : number(salt, 24, 4);
-            shape = start ? 0 : number(salt, 31, 5);
+            shape = start || kind >= 40 ? 0 : number(salt, 31, 5);
         }
 
         double radius(int wx, int wz) {
@@ -122,6 +122,7 @@ final class StoneWorldLayout {
         final int wx, wz, x, z, bottom, top, kind;
         final long seed;
         final Room room;
+        final Room wallRoom;
         final List<Point> tunnels = new ArrayList<>();
         final List<Point> shoulders = new ArrayList<>();
         final long texture;
@@ -131,12 +132,15 @@ final class StoneWorldLayout {
             this.wx = wx; this.wz = wz; this.seed = seed;
             texture = hash(wx, wz, seed + 437);
             Room chosen = null;
+            Room embedded = null;
             double best = 10;
             for (Room r : region.rooms) {
+                if (embedded == null && StoneWallStructures.contains(r, wx, wz)) embedded = r;
                 double radius = r.radius(wx, wz);
                 if (radius <= 1 && radius < best) { chosen = r; best = radius; }
             }
             room = chosen;
+            wallRoom = embedded;
             kind = room == null ? -1 : room.kind;
             int dx = room == null ? 0 : wx - room.x, dz = room == null ? 0 : wz - room.z;
             int rotation = room == null ? 0 : room.rotation;
@@ -158,6 +162,10 @@ final class StoneWorldLayout {
         BlockState at(int y) {
             if (y <= -64 || y >= 319) return Blocks.BEDROCK.defaultBlockState();
             if (y < 24 || y > 70) return STONE;
+            if (wallRoom != null && !(centerline && y > wallRoom.floor && y <= wallRoom.floor + 3)) {
+                BlockState embedded = StoneWallStructures.at(wallRoom, wx, y, wz);
+                if (embedded != null) return embedded;
+            }
             int tunnelFloor = Integer.MAX_VALUE, tunnelTop = Integer.MIN_VALUE;
             boolean main = false;
             for (Point p : tunnels) main |= p.main;

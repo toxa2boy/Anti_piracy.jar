@@ -19,6 +19,12 @@ public class EnglishLanguageStartup {
             return;
         }
         ticks = 19;
+        if (minecraft.options.renderDistance().get() != 9) {
+            minecraft.options.renderDistance().set(9);
+            minecraft.options.save();
+            minecraft.options.broadcastOptions();
+            if (minecraft.level != null) minecraft.levelRenderer.allChanged();
+        }
         if (!"en_us".equals(minecraft.getLanguageManager().getSelected())) {
             minecraft.getLanguageManager().setSelected("en_us");
             minecraft.getLanguageManager().onResourceManagerReload(minecraft.getResourceManager());

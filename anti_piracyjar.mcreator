@@ -774,7 +774,7 @@
     "modName": "Anti_piracy.jar",
     "version": "0.0.1",
     "description": "You bought your first second-hand computer. The seller said Minecraft was already installed. Among the old files and pirated games, you find a world left behind by the previous owner. The owner is dead. At first, the strange errors seem like nothing more than problems with a pirated copy. You launch the game. It’s still waiting for him..",
-    "author": "Main devs: Vapsig, FLYover67",
+    "author": "Vapsig, FLYover67",
     "websiteURL": "https://discord.com/invite/BpshSf8jhP",
     "license": "MIT License",
     "serverSideOnly": false,

@@ -40,11 +40,19 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @EventBusSubscriber(modid = "anti_piracyjar")
 public class LoginHorrorEvent {
-    private static final int FIRST_KICK_DELAY = 15 * 20;
+    private static final int FIRST_KICK_DELAY = 420 * 20;
     private static final int BLINDNESS_BEFORE_STRUCTURES = 10;
     private static final int KICK_AFTER_STRUCTURES = 5;
     private static final String CONNECTION_ERROR = "Connection error. Please try again.";
     private static final String ALREADY_ONLINE = "This player is already online.";
+    public static Component rejectLogin(net.minecraft.server.MinecraftServer server, UUID playerId) {
+        var state = HorrorWorldState.get(server);
+        String key = "login_" + playerId;
+        if (!state.data.contains(key) || state.data.getInt(key) != 1) return null;
+        state.data.putInt(key, 2);
+        state.flush(server);
+        return Component.literal(ALREADY_ONLINE);
+    }
     public static boolean isPending(ServerPlayer player) {
         var tag = HorrorWorldState.get(player.server).data;
         String key = "login_" + player.getUUID();
@@ -86,7 +94,6 @@ public class LoginHorrorEvent {
     private enum ActionType {
         BLIND_PLAYER,
         FIRST_KICK,
-        SECOND_KICK,
         FALLBACK_KICK,
         FINAL_ENTRY,
 
@@ -122,8 +129,8 @@ public class LoginHorrorEvent {
         if (stage == 0) {
             PENDING_ACTIONS.add(new PendingAction(player, ActionType.BLIND_PLAYER, FIRST_KICK_DELAY));
         } else if (stage == 1) {
-            player.removeEffect(MobEffects.BLINDNESS);
-            PENDING_ACTIONS.add(new PendingAction(player, ActionType.SECOND_KICK, 20));
+            Component reason = rejectLogin(player.server, playerId);
+            if (reason != null) player.connection.disconnect(reason);
         } else if (stage == 2) {
             player.removeEffect(MobEffects.BLINDNESS);
             PENDING_ACTIONS.add(new PendingAction(player, ActionType.FINAL_ENTRY, 20));
