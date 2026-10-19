@@ -108,23 +108,36 @@ public class DrunEntity extends Monster implements GeoEntity {
 
 	@Override
 	public SoundEvent getAmbientSound() {
-		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.warden.heartbeat"));
+		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_ambient"));
 	}
 
 	@Override
 	public void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.warden.step")), 0.15f, 1);
+		this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_step")), 0.15f, 1);
 	}
 
 	@Override
 	public SoundEvent getHurtSound(DamageSource ds) {
-		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.warden.hurt"));
+		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_hurt"));
 	}
 
 	@Override
 	public SoundEvent getDeathSound() {
-		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
+		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_death"));
 	}
+
+	@Override
+    public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
+        boolean hit = super.doHurtTarget(target);
+        if (hit) this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_attack")), 0.8F, 0.9F + this.random.nextFloat() * 0.2F);
+        return hit;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() { return 160; }
+
+    @Override
+    protected boolean shouldDespawnInPeaceful() { return false; }
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {

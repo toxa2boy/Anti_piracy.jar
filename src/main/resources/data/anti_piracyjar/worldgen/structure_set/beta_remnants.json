@@ -1,6 +1,26 @@
 {
   "structures": [
     {
+      "structure": "anti_piracyjar:beta_lumber_camp",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_glass_garden",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_pond_hut",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_roadside_camp",
+      "weight": 3
+    },
+    {
+      "structure": "anti_piracyjar:beta_split_base",
+      "weight": 3
+    },
+    {
       "structure": "anti_piracyjar:beta_starter_home",
       "weight": 3
     },

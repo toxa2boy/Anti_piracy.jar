@@ -312,7 +312,27 @@
           "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_watchtower.json",
           "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_workshop.json",
           "src/main/resources/data/anti_piracyjar/worldgen/template_pool/shouse.json",
-          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/sstair.json"
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/sstair.json",
+          "src/main/resources/data/anti_piracyjar/loot_table/chests/beta_farm.json",
+          "src/main/resources/data/anti_piracyjar/loot_table/chests/beta_miner.json",
+          "src/main/resources/data/anti_piracyjar/loot_table/chests/beta_scraps.json",
+          "src/main/resources/data/anti_piracyjar/loot_table/chests/beta_supplies.json",
+          "src/main/resources/data/anti_piracyjar/loot_table/chests/beta_workshop.json",
+          "src/main/resources/data/anti_piracyjar/structure/beta_glass_garden.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_lumber_camp.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_pond_hut.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_roadside_camp.nbt",
+          "src/main/resources/data/anti_piracyjar/structure/beta_split_base.nbt",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_glass_garden.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_lumber_camp.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_pond_hut.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_roadside_camp.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/structure/beta_split_base.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_glass_garden.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_lumber_camp.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_pond_hut.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_roadside_camp.json",
+          "src/main/resources/data/anti_piracyjar/worldgen/template_pool/beta_split_base.json"
         ]
       }
     },
@@ -362,7 +382,7 @@
       "name": "Drun",
       "type": "animatedentity",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "drun",
       "metadata": {
         "files": [
@@ -653,6 +673,54 @@
       ],
       "category": "neutral",
       "subtitle": ""
+    },
+    {
+      "name": "drun_ambient",
+      "files": [
+        "drun_ambient_1",
+        "drun_ambient_2",
+        "drun_ambient_3"
+      ],
+      "category": "hostile",
+      "subtitle": "Drun breathes"
+    },
+    {
+      "name": "drun_attack",
+      "files": [
+        "drun_attack_1",
+        "drun_attack_2",
+        "drun_attack_3"
+      ],
+      "category": "hostile",
+      "subtitle": "Drun snarls"
+    },
+    {
+      "name": "drun_hurt",
+      "files": [
+        "drun_hurt_1",
+        "drun_hurt_2"
+      ],
+      "category": "hostile",
+      "subtitle": "Drun recoils"
+    },
+    {
+      "name": "drun_death",
+      "files": [
+        "drun_death_1",
+        "drun_death_2"
+      ],
+      "category": "hostile",
+      "subtitle": "Drun collapses"
+    },
+    {
+      "name": "drun_step",
+      "files": [
+        "drun_step_1",
+        "drun_step_2",
+        "drun_step_3"
+      ],
+      "category": "hostile",
+      "subtitle": "Heavy footsteps"
     }
   ],
   "tag_elements": {

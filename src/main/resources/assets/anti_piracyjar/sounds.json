@@ -123,5 +123,82 @@
         "stream": false
       }
     ]
+  },
+  "drun_ambient": {
+    "subtitle": "subtitles.drun_ambient",
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_ambient_1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_ambient_2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_ambient_3",
+        "stream": false
+      }
+    ]
+  },
+  "drun_attack": {
+    "subtitle": "subtitles.drun_attack",
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_attack_1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_attack_2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_attack_3",
+        "stream": false
+      }
+    ]
+  },
+  "drun_hurt": {
+    "subtitle": "subtitles.drun_hurt",
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_hurt_1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_hurt_2",
+        "stream": false
+      }
+    ]
+  },
+  "drun_death": {
+    "subtitle": "subtitles.drun_death",
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_death_1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_death_2",
+        "stream": false
+      }
+    ]
+  },
+  "drun_step": {
+    "subtitle": "subtitles.drun_step",
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_step_1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_step_2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_step_3",
+        "stream": false
+      }
+    ]
   }
 }

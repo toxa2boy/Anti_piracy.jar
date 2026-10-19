@@ -20,4 +20,9 @@ public class AntiPiracyjarModSounds {
 	public static final DeferredHolder<SoundEvent, SoundEvent> STARTVIDEO = REGISTRY.register("startvideo", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "startvideo")));
 	public static final DeferredHolder<SoundEvent, SoundEvent> POMEHIOGG = REGISTRY.register("pomehiogg", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "pomehiogg")));
 	public static final DeferredHolder<SoundEvent, SoundEvent> AMBIENT = REGISTRY.register("ambient", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "ambient")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_AMBIENT = REGISTRY.register("drun_ambient", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_ambient")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_ATTACK = REGISTRY.register("drun_attack", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_attack")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_HURT = REGISTRY.register("drun_hurt", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_hurt")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_DEATH = REGISTRY.register("drun_death", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_death")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_STEP = REGISTRY.register("drun_step", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_step")));
 }

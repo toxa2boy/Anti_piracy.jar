@@ -31,22 +31,23 @@ public abstract class BetaTerrainMixin {
         var builder = result.get().getPiecesBuilder();
         if (builder.isEmpty()) return;
         var bounds = builder.getBoundingBox();
-        int[] heights = new int[16];
+        int[] heights = new int[5];
         int index = 0;
-        for (int ix = 0; ix < 4; ix++) {
-            for (int iz = 0; iz < 4; iz++) {
-                int x = bounds.minX() + (bounds.maxX() - bounds.minX()) * ix / 3;
-                int z = bounds.minZ() + (bounds.maxZ() - bounds.minZ()) * iz / 3;
+        for (int ix = 0; ix < 3; ix++) {
+            for (int iz = 0; iz < 3; iz++) {
+                if ((ix == 1) != (iz == 1)) continue;
+                int x = bounds.minX() + (bounds.maxX() - bounds.minX()) * ix / 2;
+                int z = bounds.minZ() + (bounds.maxZ() - bounds.minZ()) * iz / 2;
                 heights[index++] = context.chunkGenerator().getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG,
                         context.heightAccessor(), context.randomState());
             }
         }
         Arrays.sort(heights);
-        if (heights[15] - heights[0] > 4 || heights[0] < context.chunkGenerator().getSeaLevel()) {
+        if (heights[4] - heights[0] > 4 || heights[0] < context.chunkGenerator().getSeaLevel()) {
             callback.setReturnValue(Optional.empty());
             return;
         }
-        int floor = heights[8] - 1;
+        int floor = heights[2] - 1;
         builder.offsetPiecesVertically(floor - 3 - bounds.minY());
         BlockPos anchor = new BlockPos(result.get().position().getX(), floor + 1, result.get().position().getZ());
         callback.setReturnValue(Optional.of(new Structure.GenerationStub(anchor,
