@@ -1,0 +1,6 @@
+Recorded knock sources (CC0, downloaded 2026-10-27):
+Glass: DavidGreck, Knock on a Glass Door #1, BigSoundBank #0319.
+https://bigsoundbank.com/knock-on-a-glass-door-1-s0319.html
+Wood: Joseph SARDIN, Door, BigSoundBank #0015.
+https://bigsoundbank.com/door-s0015.html
+Edits: extracted one impact, converted to mono, normalized peak, short edge fades, OGG encoding.

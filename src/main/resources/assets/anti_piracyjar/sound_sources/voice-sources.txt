@@ -1,0 +1,11 @@
+Generated at https://tetyys.com/SAPI4/
+Voice: Male Whisper
+Pitch: 113
+Speed: 170
+
+I can see you.
+I know you are not asleep.
+Open the door.
+You left the light on.
+There is room for one more.
+Do not pretend you cannot hear me.

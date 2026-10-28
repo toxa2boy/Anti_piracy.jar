@@ -22,7 +22,7 @@ public final class ClientEventHandler {
     static List<ServerPlayer> targets(MinecraftServer server, List<ServerPlayer> players) {
         List<ServerPlayer> candidates = new ArrayList<>(players.stream()
                 .filter(p -> p.isAlive() && !p.isSpectator() && p.level().dimension().equals(Level.OVERWORLD)
-                        && !LoginHorrorEvent.isPending(p)).toList());
+).toList());
         List<ServerPlayer> chosen = new ArrayList<>();
         var random = server.overworld().random;
         int count = Math.min(candidates.size(), 1 + random.nextInt(2));
@@ -37,9 +37,9 @@ public final class ClientEventHandler {
         int stage = state.data.getInt("storyStage");
         if (stage >= TIMES.length) return;
         long day = server.overworld().getDayTime();
-        if (day < TIMES[stage] || server.overworld().getGameTime() < state.data.getLong("nextStoryTick")) return;
+        if (HorrorDirector.clock(server) < HorrorDirector.storyAt(server,stage)) return;
         List<ServerPlayer> players = targets(server);
-        if (players.isEmpty()) return;
+        if (players.isEmpty() || !HorrorDirector.start(server,"story","",stage==0 ? 400 : 80,false)) return;
         state.data.putInt("storyStage", stage + 1);
         state.data.putLong("nextStoryTick", server.overworld().getGameTime() + 200);
         if (stage == 0) {

@@ -49,9 +49,9 @@ public class AntiPiracyjarEvent {
         if (server.overworld().getGameTime() % 20 != 0) return;
         var world = HorrorWorldState.get(server);
         if (!world.data.getBoolean("messagesFinished") || world.data.getBoolean("pirateDone")) return;
-        if (server.overworld().getDayTime() / 24000 < world.data.getLong("messagesFinishedDay") + 1 || !server.overworld().isDay()) return;
+        if (HorrorDirector.clock(server)<HorrorDirector.at(server,40)) return;
         var targets = net.mcreator.antipiracyjar.ClientEventHandler.targets(server);
-        if (targets.isEmpty()) return;
+        if (targets.isEmpty() || !HorrorDirector.start(server,"pirate","",2400,false)) return;
         world.data.putBoolean("pirateDone", true);
         for (ServerPlayer player : targets) world.data.putBoolean("pirateSelected_" + player.getUUID(), true);
         world.flush(server);
@@ -146,6 +146,7 @@ public class AntiPiracyjarEvent {
 
         var world = HorrorWorldState.get(player.server);
         if (!world.data.getBoolean("pirateSelected_" + id) || world.data.getBoolean("pirateStarted_" + id)) return;
+        if (!HorrorDirector.active(player.server,"pirate") && !HorrorDirector.start(player.server,"pirate","",2400,false)) return;
         ServerLevel level = player.serverLevel();
         {
             world.data.putBoolean("pirateStarted_" + id, true);

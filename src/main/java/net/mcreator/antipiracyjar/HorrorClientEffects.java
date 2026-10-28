@@ -10,6 +10,12 @@ public final class HorrorClientEffects {
     public static int sequence;
     public static long whiteout;
     public static void receive(int effect) {
+        if (effect == 26) { DrunVisitClient.allowCorner(); return; }
+        if (effect == 25) { DrunVisitClient.testCorner(); return; }
+        if (effect == WatchEncounterEvent.TEST) { WatchEncounterClient.test(); return; }
+        if (effect == WatchEncounterEvent.SCARE) { WatchEncounterClient.scare(); return; }
+        if (effect == WatchEncounterEvent.EFFECT) { WatchEncounterClient.begin(); return; }
+        if (effect == DontTurnAroundEvent.EFFECT) { DontTurnAroundClient.begin(); return; }
         if (effect == 99) { Minecraft.getInstance().stop(); return; }
         if (effect == 0) Minecraft.getInstance().setScreen(new FakeKickScreen());
         if (effect >= 1000 && effect <= 1181) sequence = effect - 1000;

@@ -119,7 +119,8 @@ public final class StoneHuntEvent {
         }
         if (ready.isEmpty() || server.overworld().getGameTime() % 100 != 0) return;
         var player = ready.get(server.overworld().random.nextInt(ready.size()));
-        spawnNear(player);
+        if (!HorrorDirector.start(player,"stone_hunt",1200,false)) return;
+        if (!spawnNear(player)) HorrorDirector.finish(player,"stone_hunt",false);
     }
 
     static boolean spawnNear(ServerPlayer player) {

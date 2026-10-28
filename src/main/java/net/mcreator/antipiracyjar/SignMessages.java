@@ -48,6 +48,8 @@ public class SignMessages {
         if (!level.dimension().equals(net.minecraft.world.level.Level.OVERWORLD)) return;
         var state = HorrorWorldState.get(serverPlayer.server);
         if (state.data.getBoolean("exitSignDone")) return;
+        if (HorrorDirector.clock(serverPlayer.server)<HorrorDirector.at(serverPlayer.server,5)
+                || !HorrorDirector.start(serverPlayer,"exit_sign",100,false)) return;
         state.data.putBoolean("exitSignDone", true);
         state.flush(serverPlayer.server);
         serverPlayer.sendSystemMessage(Component.literal("Did you really think that would work?")

@@ -382,7 +382,7 @@
       "name": "Drun",
       "type": "animatedentity",
       "compiles": true,
-      "locked_code": true,
+      "locked_code": false,
       "registry_name": "drun",
       "metadata": {
         "files": [
@@ -609,6 +609,21 @@
           "src/main/java/net/mcreator/antipiracyjar/mixin/StoneAccessMixin.java"
         ]
       }
+    },
+    {
+      "name": "Watch",
+      "type": "animatedentity",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "watch",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/entity/WatchEntity.java",
+          "src/main/java/net/mcreator/antipiracyjar/entity/model/WatchModel.java",
+          "src/main/java/net/mcreator/antipiracyjar/client/renderer/WatchRenderer.java",
+          "src/main/resources/assets/anti_piracyjar/models/item/watch_spawn_egg.json"
+        ]
+      }
     }
   ],
   "variable_elements": [],
@@ -721,6 +736,14 @@
       ],
       "category": "hostile",
       "subtitle": "Heavy footsteps"
+    },
+    {
+      "name": "satana",
+      "files": [
+        "satanqa"
+      ],
+      "category": "ambient",
+      "subtitle": ""
     }
   ],
   "tag_elements": {
@@ -743,16 +766,19 @@
   "tab_element_order": {},
   "language_map": {
     "en_us": {
+      "entity.anti_piracyjar.watch": "Watch",
+      "entity.anti_piracyjar.pirat": "Pirat",
+      "subtitles.startvideo": "",
+      "subtitles.ambient": "",
       "item.anti_piracyjar.pirat_spawn_egg": "Pirat Spawn Egg",
       "subtitles.vhs": "",
+      "item.anti_piracyjar.watch_spawn_egg": "Watch Spawn Egg",
       "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom",
-      "entity.anti_piracyjar.pirat": "Pirat",
       "entity.anti_piracyjar.drun": "Drun",
-      "subtitles.startvideo": "",
       "subtitles.pomehiogg": "pomehi",
-      "subtitles.ambient": "",
       "biome.anti_piracyjar.kamnibiom": "Kamnibiom",
       "item.anti_piracyjar.drun_spawn_egg": "Drun Spawn Egg",
+      "subtitles.satana": "",
       "subtitles.stuk-v-dver": ""
     }
   },
@@ -779,7 +805,11 @@
     "license": "MIT License",
     "serverSideOnly": false,
     "modPicture": "anticp",
-    "requiredMods": [],
+    "requiredMods": [
+      "geckolib",
+      "ffmpeglib",
+      "ffmpeglibextra"
+    ],
     "dependencies": [],
     "dependants": [],
     "mcreatorDependencies": [

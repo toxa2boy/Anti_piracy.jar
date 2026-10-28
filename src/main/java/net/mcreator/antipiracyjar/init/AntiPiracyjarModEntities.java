@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.core.registries.Registries;
 
+import net.mcreator.antipiracyjar.entity.WatchEntity;
 import net.mcreator.antipiracyjar.entity.PiratEntity;
 import net.mcreator.antipiracyjar.entity.DrunEntity;
 import net.mcreator.antipiracyjar.AntiPiracyjarMod;
@@ -29,6 +30,10 @@ public class AntiPiracyjarModEntities {
 			EntityType.Builder.<DrunEntity>of(DrunEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
 
 					.sized(0.6f, 1.8f));
+	public static final DeferredHolder<EntityType<?>, EntityType<WatchEntity>> WATCH = register("watch",
+			EntityType.Builder.<WatchEntity>of(WatchEntity::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3)
+
+					.sized(0.6f, 1.8f));
 
 	// Start of user code block custom entities
 	// End of user code block custom entities
@@ -40,11 +45,13 @@ public class AntiPiracyjarModEntities {
 	public static void init(RegisterSpawnPlacementsEvent event) {
 		PiratEntity.init(event);
 		DrunEntity.init(event);
+		WatchEntity.init(event);
 	}
 
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
 		event.put(PIRAT.get(), PiratEntity.createAttributes().build());
 		event.put(DRUN.get(), DrunEntity.createAttributes().build());
+		event.put(WATCH.get(), WatchEntity.createAttributes().build());
 	}
 }

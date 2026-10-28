@@ -27,7 +27,8 @@ public final class OverworldOmenEvents {
                 && !p.isCreative() && !LoginHorrorEvent.isPending(p) && !StoneHuntEvent.blocked(server, p.getUUID())).toList();
         if (players.isEmpty()) return;
         var state = HorrorWorldState.get(server);
-        if (!state.data.getBoolean("omenLightningDone") && now >= LIGHTNING_TIME) {
+        if (!state.data.getBoolean("omenLightningDone") && HorrorDirector.clock(server) >= HorrorDirector.at(server,28)) {
+            if (!HorrorDirector.start(server,"lightning","",160,false)) return;
             var target = players.get(level.random.nextInt(players.size()));
             var bolt = EntityType.LIGHTNING_BOLT.create(level);
             if (bolt != null) {
@@ -38,12 +39,15 @@ public final class OverworldOmenEvents {
                 }
             }
         }
+        if (state.data.getBoolean("omenLightningDone") && HorrorDirector.active(server,"lightning")) return;
         if (!state.data.contains("omenChatNext")) {
             state.data.putLong("omenChatNext", now + nextDelay(level.random));
             state.setDirty();
             return;
         }
-        if (now < state.data.getLong("omenChatNext")) return;
+        var chooser = players.get(level.random.nextInt(players.size()));
+        if (!HorrorDirector.rollShared(chooser,"omen_chat",15,600,9000)
+                || !HorrorDirector.start(server,"omen_chat","",80,false)) return;
         String text;
         if (level.random.nextBoolean()) {
             var target = players.get(level.random.nextInt(players.size()));

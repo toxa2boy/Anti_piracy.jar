@@ -200,5 +200,13 @@
         "stream": false
       }
     ]
+  },
+  "satana": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:satanqa",
+        "stream": false
+      }
+    ]
   }
 }

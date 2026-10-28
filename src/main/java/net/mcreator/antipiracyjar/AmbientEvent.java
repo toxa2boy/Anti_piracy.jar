@@ -40,12 +40,13 @@ public class AmbientEvent {
 
         var state = HorrorWorldState.get(event.getServer());
         if (state.data.getBoolean("ambientDone")) return;
-        if (event.getServer().overworld().getGameTime() < COOLDOWN_TICKS) return;
+        if (HorrorDirector.clock(event.getServer()) < HorrorDirector.at(event.getServer(),3)) return;
         List<ServerPlayer> players = ClientEventHandler.targets(event.getServer());
         if (players.isEmpty()) {
             return;
         }
 
+        if (!HorrorDirector.start(event.getServer(),"ambient","",120,false)) return;
         RandomSource random = event.getServer().overworld().getRandom();
         state.data.putBoolean("ambientDone", true);
         state.flush(event.getServer());

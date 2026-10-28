@@ -29,6 +29,24 @@ description="You bought your first second-hand computer. The seller said Minecra
     ordering="AFTER"
     side="BOTH"
 
+[[dependencies.anti_piracyjar]]
+    modId="ffmpeglib"
+    type="required"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.anti_piracyjar]]
+    modId="ffmpeglibextra"
+    type="required"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.anti_piracyjar]]
+    modId="geckolib"
+    type="required"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 
 [[dependencies.anti_piracyjar]]
     modId="geckolib"

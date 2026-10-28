@@ -1,6 +1,6 @@
 {
   "type": "neoforge:add_spawns",
-  "biomes": [],
+  "biomes": "anti_piracyjar:kamnibiom",
   "spawners": {
     "type": "anti_piracyjar:drun",
     "weight": 3,

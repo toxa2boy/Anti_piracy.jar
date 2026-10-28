@@ -169,7 +169,14 @@ public class LoginHorrorEvent {
                 continue;
             }
 
+            if (action.type == ActionType.BLIND_PLAYER) {
+                if (HorrorDirector.clock(player.server)<HorrorDirector.at(player.server,15)
+                        || (!HorrorDirector.active(player.server,"login") && !HorrorDirector.start(player.server,"login","",140,false))) {
+                    action.ticks=20; continue;
+                }
+            }
             if (action.type == ActionType.FINAL_ENTRY) {
+                if (!HorrorDirector.start(player,"login_return",80,false)) { action.ticks=20; continue; }
                 Component leaveMessage = Component.translatable("multiplayer.player.left", player.getDisplayName())
                         .withStyle(ChatFormatting.YELLOW);
                 player.server.getPlayerList().broadcastSystemMessage(leaveMessage, false);

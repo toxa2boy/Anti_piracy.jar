@@ -201,6 +201,8 @@ public class Piracydream {
                     return;
                 }
 
+                if (HorrorDirector.forcedWake(player) || HorrorDirector.clock(player.server)<HorrorDirector.at(player.server,36)
+                        || !HorrorDirector.start(player,"dream",2400,false)) return;
                 var worldState = HorrorWorldState.get(player.server);
                 worldState.data.putBoolean("dreamDone", true);
                 worldState.flush(player.server);

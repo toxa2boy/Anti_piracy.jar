@@ -1,13 +1,16 @@
 {
+  "entity.anti_piracyjar.watch": "Watch",
+  "entity.anti_piracyjar.pirat": "Pirat",
+  "subtitles.startvideo": "",
+  "subtitles.ambient": "",
   "item.anti_piracyjar.pirat_spawn_egg": "Pirat Spawn Egg",
   "subtitles.vhs": "",
+  "item.anti_piracyjar.watch_spawn_egg": "Watch Spawn Egg",
   "biome.anti_piracyjar.flat_land_biom": "Flat Land Biom",
-  "entity.anti_piracyjar.pirat": "Pirat",
   "entity.anti_piracyjar.drun": "Drun",
-  "subtitles.startvideo": "",
   "subtitles.pomehiogg": "pomehi",
-  "subtitles.ambient": "",
   "biome.anti_piracyjar.kamnibiom": "Kamnibiom",
   "item.anti_piracyjar.drun_spawn_egg": "Drun Spawn Egg",
+  "subtitles.satana": "",
   "subtitles.stuk-v-dver": ""
 }
