@@ -95,8 +95,14 @@ public final class DrunSleepEvent {
         var visit = new Visit(site,test);
         visit.voice = player.getRandom().nextInt(6);
         VISITS.put(player.getUUID(),visit);
+        applyVisitEffects(player);
         PacketDistributor.sendToPlayer(player,new HorrorNetwork.KnockPayload(site.target(),site.feet(),site.route(),visit.voice,false));
         return true;
+    }
+
+    private static void applyVisitEffects(ServerPlayer player) {
+        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN,40,1,false,false,true));
+        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN,40,1,false,false,true));
     }
 
     private static void stop(ServerPlayer player, Visit visit) {
@@ -132,6 +138,7 @@ public final class DrunSleepEvent {
             if (!level.hasChunkAt(visit.site.target()) || visit.age > 600) {
                 stop(player,visit); iterator.remove(); continue;
             }
+            if (visit.age % 20 == 0) applyVisitEffects(player);
             if (visit.knocking < 0) continue;
             visit.knocking++;
             if (visit.knocking == 12 || visit.knocking == 26 || visit.knocking == 40) {
