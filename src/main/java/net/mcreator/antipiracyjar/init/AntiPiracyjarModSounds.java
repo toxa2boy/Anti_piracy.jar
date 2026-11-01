@@ -28,11 +28,4 @@ public class AntiPiracyjarModSounds {
 	public static final DeferredHolder<SoundEvent, SoundEvent> SATANA = REGISTRY.register("satana", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "satana")));
 	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_KNOCK_GLASS = REGISTRY.register("drun_knock_glass", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_knock_glass")));
 	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_KNOCK_WOOD = REGISTRY.register("drun_knock_wood", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_knock_wood")));
-	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_SCREAMER = REGISTRY.register("drun_screamer", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_screamer")));
-	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_VOICE_0 = REGISTRY.register("drun_voice_0", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_voice_0")));
-	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_VOICE_1 = REGISTRY.register("drun_voice_1", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_voice_1")));
-	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_VOICE_2 = REGISTRY.register("drun_voice_2", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_voice_2")));
-	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_VOICE_3 = REGISTRY.register("drun_voice_3", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_voice_3")));
-	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_VOICE_4 = REGISTRY.register("drun_voice_4", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_voice_4")));
-	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_VOICE_5 = REGISTRY.register("drun_voice_5", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_voice_5")));
 }
