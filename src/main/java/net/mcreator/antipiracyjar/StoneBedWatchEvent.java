@@ -18,21 +18,9 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Второй скрипт для "сна" в структуре (StoneBedUseEvent): встреча Watch.
- *
- * WatchEncounterEvent при этом НЕ изменён: здесь повторена логика его запуска (как в /watchtest spawn,
- * только с обычным эффектом EFFECT), а сама встреча заносится в его внутренний список ACTIVE.
- * Поэтому дальше её ведёт сам WatchEncounterEvent (ответы клиента, ослепление, завершение).
- *
- * Когда запускается: StoneBedUseEvent помечает сессию флагом "script" (попаданий в структуры уже больше порога).
- * Здесь через 10 секунд после начала сессии флаг снимается и встреча стартует.
- * Если игрок вернулся в каменный мир раньше, сессия (и флаг) удалены - встреча не стартует; идущая встреча прерывается.
- */
 @EventBusSubscriber
 public class StoneBedWatchEvent {
 
-    /** Через сколько тиков после начала "сна" запускается встреча: 10 секунд. */
     private static final int DELAY_TICKS = 10 * 20;
     private static final boolean DEBUG = true;
 
@@ -52,20 +40,20 @@ public class StoneBedWatchEvent {
         if (!data.contains(StoneBedUseEvent.SESSION_KEY)) return;
 
         CompoundTag session = data.getCompound(StoneBedUseEvent.SESSION_KEY);
-        if (!session.getBoolean("script")) return;
+        int kind = session.getInt("entity");
+        if (kind <= 0) return;
 
         int elapsed = StoneBedUseEvent.SESSION_TICKS - session.getInt("ticks");
         if (elapsed < DELAY_TICKS) return;
 
-        // флаг снимаем сразу: запуск только один раз за "сон"
-        session.putBoolean("script", false);
+        // Сбрасываем флаг, чтобы не триггерить повторно в этой же сессии
+        session.putInt("entity", 0);
         data.put(StoneBedUseEvent.SESSION_KEY, session);
 
         boolean started = start(player);
-        dbg("Watch encounter {}", started ? "started" : "skipped (busy, another horror scene or wrong dimension)");
+        dbg("entity stage triggered: {}", started ? "started" : "skipped");
     }
 
-    /** Запуск встречи Watch (логика WatchEncounterEvent / "/watchtest spawn"). */
     static boolean start(ServerPlayer player) {
         if (WatchEncounterEvent.busy(player.getUUID()) || DontTurnAroundEvent.busy(player.getUUID())) return false;
         if (!player.isAlive() || player.isSpectator() || player.level().dimension() != Level.OVERWORLD) return false;
@@ -75,7 +63,7 @@ public class StoneBedWatchEvent {
             register(player);
         } catch (ReflectiveOperationException | RuntimeException e) {
             LOGGER.error("[StoneBedWatch] could not register the encounter in WatchEncounterEvent", e);
-            HorrorDirector.finish(player, "watch", false); // освобождаем сцену, раз встреча не создана
+            HorrorDirector.finish(player, "watch", false);
             return false;
         }
 
@@ -83,15 +71,10 @@ public class StoneBedWatchEvent {
         return true;
     }
 
-    /** Прервать встречу. Использует открытый метод WatchEncounterEvent.receive: действие 0 = "закончить". Нет встречи - ничего не делает. */
     public static void cancel(ServerPlayer player) {
         WatchEncounterEvent.receive(player, 0);
     }
 
-    /**
-     * Заносит встречу во внутренний список WatchEncounterEvent.ACTIVE (как строка
-     * ACTIVE.put(uuid, new Encounter(now + 100)) в его команде spawn), не изменяя сам файл.
-     */
     @SuppressWarnings("unchecked")
     private static void register(ServerPlayer player) throws ReflectiveOperationException {
         Field active = WatchEncounterEvent.class.getDeclaredField("ACTIVE");

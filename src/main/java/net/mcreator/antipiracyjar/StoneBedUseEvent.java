@@ -9,6 +9,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +20,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -54,23 +56,21 @@ public class StoneBedUseEvent {
     private static final int CHANCE_NOT_THIS_ONE = 60;
     private static final int CHANCE_SPAWN = 1;
     static final int SESSION_TICKS = 40 * 20;
-    private static final int SEARCH_RADIUS_CHUNKS = 80;
-    private static final int SEARCH_OFFSET_BLOCKS = 1500;
+    private static final int SEARCH_RADIUS_CHUNKS = 120;
+    private static final int SEARCH_OFFSET_BLOCKS = 3000;
     private static final int SCAN_RADIUS = 24;
-    private static final int MAX_SEARCHES = 5;
+    private static final int MAX_SEARCHES = 30;
     private static final boolean DEBUG = true;
 
-    // ===== НОВОЕ: счётчики и второй скрипт =====
-    /** Ключи счётчиков в данных игрока (сохраняются вместе с миром). */
     private static final String KEY_BED_USES = "StoneBedUses";
     private static final String KEY_STRUCTURE_VISITS = "StoneBedStructureVisits";
-    /** Второй скрипт включается, когда попаданий в структуры уже БОЛЬШЕ этого числа (то есть со следующего пребывания). */
+    private static final String KEY_VISITED_CHUNKS = "StoneBedVisitedChunks";
+    private static final String KEY_ENTITY_SPAWN_COUNT = "StoneBedEntitySpawns";
+    
     private static final int SECOND_SCRIPT_AFTER_VISITS = 5;
 
     private static final Logger LOGGER = LogUtils.getLogger();
     static final String SESSION_KEY = "StoneBedSession";
-    
-    private static final Set<BlockPos> VISITED_STRUCTURES = new HashSet<>();
 
     private static void dbg(String message, Object... args) {
         if (DEBUG) {
@@ -94,26 +94,28 @@ public class StoneBedUseEvent {
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
 
-        // НОВОЕ: каждое использование кровати засчитывается
         CompoundTag stats = player.getPersistentData();
         int uses = stats.getInt(KEY_BED_USES) + 1;
         stats.putInt(KEY_BED_USES, uses);
-        dbg("bed uses total: {}, structure visits so far: {}", uses, stats.getInt(KEY_STRUCTURE_VISITS));
+        int visits = stats.getInt(KEY_STRUCTURE_VISITS);
+        dbg("bed uses total: {}, structure visits so far: {}", uses, visits);
 
         int roll = level.random.nextInt(100);
         ServerLevel overworld = player.getServer().overworld();
 
-        if (roll < CHANCE_NOT_THIS_ONE) {
+        boolean forceStructure = (visits >= SECOND_SCRIPT_AFTER_VISITS) && (level.random.nextFloat() < 0.75f);
+
+        if (!forceStructure && roll < CHANCE_NOT_THIS_ONE) {
             dbg("event 1 (roll {})", roll);
             breakBed(level, pos);
             showNotThisOne(player);
-        } else if (roll < CHANCE_NOT_THIS_ONE + CHANCE_SPAWN) {
+        } else if (!forceStructure && roll < CHANCE_NOT_THIS_ONE + CHANCE_SPAWN) {
             dbg("event 3 (roll {}): world spawn", roll);
             breakBed(level, pos);
             teleportToWorldSpawn(player, overworld);
         } else {
             dbg("event 2 (roll {}): structure for {} s", roll, SESSION_TICKS / 20);
-            BlockPos spot = findUnvisitedStructureSpot(overworld);
+            BlockPos spot = findUnvisitedStructureSpot(player, overworld);
             breakBed(level, pos);
             if (spot == null) {
                 dbg("no safe or unvisited place found, falling back to the message");
@@ -152,12 +154,35 @@ public class StoneBedUseEvent {
     }
 
     private static void startSession(ServerPlayer player, ServerLevel overworld, BlockPos spot) {
-        // НОВОЕ: попадание в структуру засчитывается; второй скрипт включается, если ДО этого попаданий уже было больше порога
         CompoundTag stats = player.getPersistentData();
         int visitsBefore = stats.getInt(KEY_STRUCTURE_VISITS);
-        stats.putInt(KEY_STRUCTURE_VISITS, visitsBefore + 1);
-        boolean secondScript = visitsBefore > SECOND_SCRIPT_AFTER_VISITS;
-        dbg("structure visit #{}, second script: {}", visitsBefore + 1, secondScript);
+        int totalVisits = visitsBefore + 1;
+        stats.putInt(KEY_STRUCTURE_VISITS, totalVisits);
+
+        // Логика появления сущности:
+        // Строго на 6-й раз (totalVisits == 6) сущность появляется 100%.
+        // После 6-го раза сущность появляется каждые 2-3 раза (рандомно либо по счетчику).
+        int entitySpawnCount = stats.getInt(KEY_ENTITY_SPAWN_COUNT);
+        boolean spawnEntity = false;
+
+        if (totalVisits == 6) {
+            spawnEntity = true;
+            entitySpawnCount++;
+            stats.putInt(KEY_ENTITY_SPAWN_COUNT, entitySpawnCount);
+        } else if (totalVisits > 6) {
+            // Шанс появления раз в 2-3 раза (~40% шанс на каждый сон или через раз)
+            if (overworld.random.nextBoolean() || totalVisits % 2 == 0) {
+                spawnEntity = true;
+                entitySpawnCount++;
+                stats.putInt(KEY_ENTITY_SPAWN_COUNT, entitySpawnCount);
+            }
+        }
+
+        // Агрессивность: со второго появления сущности (entitySpawnCount >= 2)
+        boolean aggressive = entitySpawnCount >= 2;
+
+        dbg("structure visit #{}, spawn entity: {}, entity spawns total: {}, aggressive: {}", 
+                totalVisits, spawnEntity, entitySpawnCount, aggressive);
 
         CompoundTag session = new CompoundTag();
         session.putString("dim", player.level().dimension().location().toString());
@@ -167,7 +192,8 @@ public class StoneBedUseEvent {
         session.putFloat("yaw", player.getYRot());
         session.putFloat("pitch", player.getXRot());
         session.putInt("ticks", SESSION_TICKS);
-        session.putBoolean("script", secondScript);
+        session.putInt("entity", spawnEntity ? 1 : 0);
+        session.putBoolean("aggressive", aggressive);
         player.getPersistentData().put(SESSION_KEY, session);
 
         dbg("session started, teleporting to {} {} {}", spot.getX(), spot.getY(), spot.getZ());
@@ -180,10 +206,7 @@ public class StoneBedUseEvent {
         CompoundTag session = data.getCompound(SESSION_KEY);
         data.remove(SESSION_KEY);
 
-        // НОВОЕ: возврат раньше времени отменяет второй скрипт (если он ещё не запущен - флаг удалён вместе с сессией)
-        // или прерывает уже идущую встречу. Вся логика второго скрипта - в StoneBedWatchEvent.
         StoneBedWatchEvent.cancel(player);
-
         clearBedsFromInventory(player);
 
         MinecraftServer server = player.getServer();
@@ -225,15 +248,33 @@ public class StoneBedUseEvent {
             return;
         }
         session.putInt("ticks", left);
-
         data.put(SESSION_KEY, session);
     }
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingIncomingDamageEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (!player.getPersistentData().contains(SESSION_KEY)) return;
+        CompoundTag data = player.getPersistentData();
+        if (!data.contains(SESSION_KEY)) return;
 
+        CompoundTag session = data.getCompound(SESSION_KEY);
+        boolean aggressive = session.getBoolean("aggressive");
+
+        // Урон нанесен ТОЛЬКО мобом/сущностью И включен агрессивный режим
+        if (aggressive && event.getSource().getEntity() instanceof LivingEntity) {
+            if (player.getHealth() - event.getAmount() <= 0.0F) {
+                event.setCanceled(true);
+                player.setHealth(0.0F);
+                data.remove(SESSION_KEY);
+                StoneBedWatchEvent.cancel(player);
+                StoneHuntEvent.markDefeated(player.server, player.getUUID());
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new HorrorNetwork.EffectPayload(99));
+                player.connection.disconnect(Component.literal(StoneHuntEvent.LOCK_MESSAGE));
+            }
+            return;
+        }
+
+        // Если урон от падения, огня, окружения или сущность еще не злая -> возвращаем в каменное измерение
         event.setCanceled(true);
         dbg("damage during the session -> instant return");
         returnPlayer(player);
@@ -256,13 +297,14 @@ public class StoneBedUseEvent {
         }
     }
 
-    /** НОВОЕ: счётчики не должны теряться после смерти. */
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
         CompoundTag from = event.getOriginal().getPersistentData();
         CompoundTag to = event.getEntity().getPersistentData();
         if (from.contains(KEY_BED_USES)) to.putInt(KEY_BED_USES, from.getInt(KEY_BED_USES));
         if (from.contains(KEY_STRUCTURE_VISITS)) to.putInt(KEY_STRUCTURE_VISITS, from.getInt(KEY_STRUCTURE_VISITS));
+        if (from.contains(KEY_VISITED_CHUNKS)) to.put(KEY_VISITED_CHUNKS, from.get(KEY_VISITED_CHUNKS).copy());
+        if (from.contains(KEY_ENTITY_SPAWN_COUNT)) to.putInt(KEY_ENTITY_SPAWN_COUNT, from.getInt(KEY_ENTITY_SPAWN_COUNT));
     }
 
     private static void teleportToWorldSpawn(ServerPlayer player, ServerLevel overworld) {
@@ -279,8 +321,16 @@ public class StoneBedUseEvent {
         teleport(player, overworld, spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5);
     }
 
-    private static BlockPos findUnvisitedStructureSpot(ServerLevel overworld) {
+    private static BlockPos findUnvisitedStructureSpot(ServerPlayer player, ServerLevel overworld) {
         try {
+            CompoundTag stats = player.getPersistentData();
+            ListTag visitedList = stats.getList(KEY_VISITED_CHUNKS, 10);
+            Set<Long> visitedChunkCoords = new HashSet<>();
+            for (int i = 0; i < visitedList.size(); i++) {
+                CompoundTag tag = visitedList.getCompound(i);
+                visitedChunkCoords.add(tag.getLong("pos"));
+            }
+
             Registry<Structure> registry = overworld.registryAccess().registryOrThrow(Registries.STRUCTURE);
 
             List<Holder<Structure>> modStructures = registry.holders()
@@ -312,27 +362,28 @@ public class StoneBedUseEvent {
             BlockPos spawn = overworld.getSharedSpawnPos();
             int searches = 0;
             for (HolderSet<Structure> set : attempts) {
-                if (searches++ >= MAX_SEARCHES) break;
+                while (searches++ < MAX_SEARCHES) {
+                    // Увеличиваем разброс координат с каждым новым поиском, чтобы не находить то же место
+                    int ox = (overworld.random.nextInt(SEARCH_OFFSET_BLOCKS * 2 + 1) - SEARCH_OFFSET_BLOCKS) + (searches * 400);
+                    int oz = (overworld.random.nextInt(SEARCH_OFFSET_BLOCKS * 2 + 1) - SEARCH_OFFSET_BLOCKS) + (searches * 400);
+                    BlockPos center = new BlockPos(spawn.getX() + ox, 64, spawn.getZ() + oz);
 
-                int ox = overworld.random.nextInt(SEARCH_OFFSET_BLOCKS * 2 + 1) - SEARCH_OFFSET_BLOCKS;
-                int oz = overworld.random.nextInt(SEARCH_OFFSET_BLOCKS * 2 + 1) - SEARCH_OFFSET_BLOCKS;
-                BlockPos center = new BlockPos(spawn.getX() + ox, 64, spawn.getZ() + oz);
+                    Pair<BlockPos, Holder<Structure>> found = overworld.getChunkSource().getGenerator()
+                            .findNearestMapStructure(overworld, set, center, SEARCH_RADIUS_CHUNKS, false);
+                    if (found == null) continue;
 
-                Pair<BlockPos, Holder<Structure>> found = overworld.getChunkSource().getGenerator()
-                        .findNearestMapStructure(overworld, set, center, SEARCH_RADIUS_CHUNKS, false);
-                if (found == null) {
-                    continue;
-                }
+                    BlockPos structureCenter = found.getFirst();
+                    long chunkKey = ChunkPos.asLong(structureCenter.getX() >> 4, structureCenter.getZ() >> 4);
+                    if (visitedChunkCoords.contains(chunkKey)) continue;
 
-                BlockPos structureCenter = found.getFirst();
-                if (VISITED_STRUCTURES.contains(structureCenter)) {
-                    continue;
-                }
-
-                BlockPos spot = spotInStructure(overworld, structureCenter, found.getSecond().value());
-                if (spot != null) {
-                    VISITED_STRUCTURES.add(structureCenter);
-                    return spot;
+                    BlockPos spot = spotInStructure(overworld, structureCenter, found.getSecond().value());
+                    if (spot != null) {
+                        CompoundTag posTag = new CompoundTag();
+                        posTag.putLong("pos", chunkKey);
+                        visitedList.add(posTag);
+                        stats.put(KEY_VISITED_CHUNKS, visitedList);
+                        return spot;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -400,8 +451,7 @@ public class StoneBedUseEvent {
             }
         }
         if (best.isEmpty()) return null;
-        BlockPos pick = best.get(level.random.nextInt(best.size()));
-        return pick;
+        return best.get(level.random.nextInt(best.size()));
     }
 
     private static BlockPos surfaceSpotNear(ServerLevel level, BlockPos center, int radius) {
@@ -434,7 +484,7 @@ public class StoneBedUseEvent {
             BlockState s = level.getBlockState(p);
             if (!s.getCollisionShape(level, p).isEmpty() || !s.getFluidState().isEmpty()) return false;
             if (s.is(BlockTags.FIRE) || s.is(Blocks.COBWEB) || s.is(Blocks.SWEET_BERRY_BUSH)
-                    || s.is(Blocks.POWDER_SNOW) || s.is(Blocks.CACTUS)) return false;
+                    || s.is(Blocks.CACTUS)) return false;
         }
 
         AABB body = new AABB(feet.getX() + 0.2, y, feet.getZ() + 0.2, feet.getX() + 0.8, y + 1.8, feet.getZ() + 0.8);
