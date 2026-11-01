@@ -648,6 +648,18 @@
           "src/main/java/net/mcreator/antipiracyjar/StoneBedUseEvent.java"
         ]
       }
+    },
+    {
+      "name": "StoneBedWatchEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "stone_bed_watch_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/StoneBedWatchEvent.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],

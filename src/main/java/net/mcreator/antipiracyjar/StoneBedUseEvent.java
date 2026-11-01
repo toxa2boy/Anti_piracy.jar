@@ -53,15 +53,22 @@ public class StoneBedUseEvent {
 
     private static final int CHANCE_NOT_THIS_ONE = 60;
     private static final int CHANCE_SPAWN = 1;
-    private static final int SESSION_TICKS = 40 * 20;
+    static final int SESSION_TICKS = 40 * 20;
     private static final int SEARCH_RADIUS_CHUNKS = 80;
     private static final int SEARCH_OFFSET_BLOCKS = 1500;
     private static final int SCAN_RADIUS = 24;
     private static final int MAX_SEARCHES = 5;
     private static final boolean DEBUG = true;
 
+    // ===== НОВОЕ: счётчики и второй скрипт =====
+    /** Ключи счётчиков в данных игрока (сохраняются вместе с миром). */
+    private static final String KEY_BED_USES = "StoneBedUses";
+    private static final String KEY_STRUCTURE_VISITS = "StoneBedStructureVisits";
+    /** Второй скрипт включается, когда попаданий в структуры уже БОЛЬШЕ этого числа (то есть со следующего пребывания). */
+    private static final int SECOND_SCRIPT_AFTER_VISITS = 5;
+
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final String SESSION_KEY = "StoneBedSession";
+    static final String SESSION_KEY = "StoneBedSession";
     
     private static final Set<BlockPos> VISITED_STRUCTURES = new HashSet<>();
 
@@ -86,6 +93,12 @@ public class StoneBedUseEvent {
 
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
+
+        // НОВОЕ: каждое использование кровати засчитывается
+        CompoundTag stats = player.getPersistentData();
+        int uses = stats.getInt(KEY_BED_USES) + 1;
+        stats.putInt(KEY_BED_USES, uses);
+        dbg("bed uses total: {}, structure visits so far: {}", uses, stats.getInt(KEY_STRUCTURE_VISITS));
 
         int roll = level.random.nextInt(100);
         ServerLevel overworld = player.getServer().overworld();
@@ -139,6 +152,13 @@ public class StoneBedUseEvent {
     }
 
     private static void startSession(ServerPlayer player, ServerLevel overworld, BlockPos spot) {
+        // НОВОЕ: попадание в структуру засчитывается; второй скрипт включается, если ДО этого попаданий уже было больше порога
+        CompoundTag stats = player.getPersistentData();
+        int visitsBefore = stats.getInt(KEY_STRUCTURE_VISITS);
+        stats.putInt(KEY_STRUCTURE_VISITS, visitsBefore + 1);
+        boolean secondScript = visitsBefore > SECOND_SCRIPT_AFTER_VISITS;
+        dbg("structure visit #{}, second script: {}", visitsBefore + 1, secondScript);
+
         CompoundTag session = new CompoundTag();
         session.putString("dim", player.level().dimension().location().toString());
         session.putDouble("x", player.getX());
@@ -147,6 +167,7 @@ public class StoneBedUseEvent {
         session.putFloat("yaw", player.getYRot());
         session.putFloat("pitch", player.getXRot());
         session.putInt("ticks", SESSION_TICKS);
+        session.putBoolean("script", secondScript);
         player.getPersistentData().put(SESSION_KEY, session);
 
         dbg("session started, teleporting to {} {} {}", spot.getX(), spot.getY(), spot.getZ());
@@ -158,6 +179,10 @@ public class StoneBedUseEvent {
         if (!data.contains(SESSION_KEY)) return;
         CompoundTag session = data.getCompound(SESSION_KEY);
         data.remove(SESSION_KEY);
+
+        // НОВОЕ: возврат раньше времени отменяет второй скрипт (если он ещё не запущен - флаг удалён вместе с сессией)
+        // или прерывает уже идущую встречу. Вся логика второго скрипта - в StoneBedWatchEvent.
+        StoneBedWatchEvent.cancel(player);
 
         clearBedsFromInventory(player);
 
@@ -200,6 +225,7 @@ public class StoneBedUseEvent {
             return;
         }
         session.putInt("ticks", left);
+
         data.put(SESSION_KEY, session);
     }
 
@@ -228,6 +254,15 @@ public class StoneBedUseEvent {
         if (event.getEntity() instanceof ServerPlayer player) {
             player.getPersistentData().remove(SESSION_KEY);
         }
+    }
+
+    /** НОВОЕ: счётчики не должны теряться после смерти. */
+    @SubscribeEvent
+    public static void onPlayerClone(PlayerEvent.Clone event) {
+        CompoundTag from = event.getOriginal().getPersistentData();
+        CompoundTag to = event.getEntity().getPersistentData();
+        if (from.contains(KEY_BED_USES)) to.putInt(KEY_BED_USES, from.getInt(KEY_BED_USES));
+        if (from.contains(KEY_STRUCTURE_VISITS)) to.putInt(KEY_STRUCTURE_VISITS, from.getInt(KEY_STRUCTURE_VISITS));
     }
 
     private static void teleportToWorldSpawn(ServerPlayer player, ServerLevel overworld) {
