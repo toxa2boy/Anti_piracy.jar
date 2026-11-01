@@ -784,6 +784,62 @@
       ],
       "category": "neutral",
       "subtitle": ""
+    },
+    {
+      "name": "drun_screamer",
+      "files": [
+        "drun_screamer"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    },
+    {
+      "name": "drun_voice_0",
+      "files": [
+        "drun_voice_0"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    },
+    {
+      "name": "drun_voice_1",
+      "files": [
+        "drun_voice_1"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    },
+    {
+      "name": "drun_voice_2",
+      "files": [
+        "drun_voice_2"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    },
+    {
+      "name": "drun_voice_3",
+      "files": [
+        "drun_voice_3"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    },
+    {
+      "name": "drun_voice_4",
+      "files": [
+        "drun_voice_4"
+      ],
+      "category": "hostile",
+      "subtitle": ""
+    },
+    {
+      "name": "drun_voice_5",
+      "files": [
+        "drun_voice_5"
+      ],
+      "category": "hostile",
+      "subtitle": ""
     }
   ],
   "tag_elements": {

@@ -1,0 +1,28 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+tasks.named('processResources').configure {
+    inputs.dir(file('event-sounds'))
+    doLast {
+        def source = project.file('event-sounds')
+        def definitions = new JsonSlurper().parse(new File(source, 'sounds.json'))
+        def target = new File(destinationDir, 'assets/anti_piracyjar/sounds.json')
+        def merged = target.exists() ? new JsonSlurper().parse(target) : [:]
+        definitions.each { name, definition ->
+            if (!merged.containsKey(name)) merged[name] = definition
+        }
+        target.parentFile.mkdirs()
+        target.setText(JsonOutput.prettyPrint(JsonOutput.toJson(merged)), 'UTF-8')
+        definitions.values().each { definition ->
+            definition.sounds.each { entry ->
+                def id = entry instanceof String ? entry : entry.name
+                def filename = id.tokenize(':').last() + '.ogg'
+                def audio = new File(target.parentFile, 'sounds/' + filename)
+                if (!audio.exists()) {
+                    audio.parentFile.mkdirs()
+                    audio.bytes = new File(source, filename).bytes
+                }
+            }
+        }
+    }
+}
