@@ -1,5 +1,6 @@
 package net.mcreator.antipiracyjar;
 
+import com.mojang.logging.LogUtils;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.advancements.AdvancementHolder;
@@ -48,10 +49,22 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
+import org.slf4j.Logger;
+
 import java.util.Optional;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class Piracydream {
+
+    
+    private static final boolean DEBUG = true;
+    private static final Logger LOGGER = LogUtils.getLogger();
+
+    private static void dbg(String message, Object... args) {
+        if (DEBUG) {
+            LOGGER.info("[Piracydream] " + message, args);
+        }
+    }
 
     public static volatile boolean clientDreamActive = false;
 
@@ -85,8 +98,10 @@ public class Piracydream {
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
         registrar.playToClient(DreamStatePayload.TYPE, DreamStatePayload.STREAM_CODEC, (payload, context) -> {
+            dbg("client received DreamStatePayload active={}", payload.active());
             clientDreamActive = payload.active();
         });
+        dbg("DreamStatePayload registered");
     }
 
     @EventBusSubscriber
@@ -102,6 +117,7 @@ public class Piracydream {
         }
 
         private static void endDream(ServerPlayer player, boolean teleportBack) {
+            dbg("endDream teleportBack={}", teleportBack);
             CompoundTag data = player.getPersistentData();
 
             data.putBoolean(DREAM_ACTIVE_KEY, false);
@@ -191,18 +207,41 @@ public class Piracydream {
         public static void onPlayerWakeUp(PlayerWakeUpEvent event) {
             if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer player) {
                 CompoundTag data = player.getPersistentData();
+                dbg("PlayerWakeUpEvent fired, dimension={}", player.level().dimension().location());
 
-                if (!player.level().dimension().equals(Level.OVERWORLD) || HorrorWorldState.get(player.server).data.getBoolean("dreamDone") || data.getBoolean("PiracyDreamHad") || data.getBoolean(DREAM_ACTIVE_KEY)) {
+                if (!player.level().dimension().equals(Level.OVERWORLD)) {
+                    dbg("skip: player is not in the Overworld");
+                    return;
+                }
+                if (HorrorWorldState.get(player.server).data.getBoolean("dreamDone")) {
+                    dbg("skip: HorrorWorldState dreamDone is already true");
+                    return;
+                }
+                if (data.getBoolean("PiracyDreamHad")) {
+                    dbg("skip: player already had the dream (PiracyDreamHad)");
+                    return;
+                }
+                if (data.getBoolean(DREAM_ACTIVE_KEY)) {
+                    dbg("skip: dream is already active");
                     return;
                 }
 
                 ServerLevel flatLand = player.getServer().getLevel(FLAT_LAND_DIM);
                 if (flatLand == null) {
+                    dbg("skip: dimension anti_piracyjar:flat_land was not found");
                     return;
                 }
 
-                if (HorrorDirector.forcedWake(player) || HorrorDirector.clock(player.server)<HorrorDirector.at(player.server,36)
-                        || !HorrorDirector.start(player,"dream",2400,false)) return;
+                if (HorrorDirector.forcedWake(player)) {
+                    dbg("skip: HorrorDirector.forcedWake(player) is true");
+                    return;
+                }
+                if (!HorrorDirector.start(player, "dream", 2400, false)) {
+                    dbg("skip: HorrorDirector.start(dream) returned false (another event is running?)");
+                    return;
+                }
+                dbg("conditions passed, starting the dream");
+
                 var worldState = HorrorWorldState.get(player.server);
                 worldState.data.putBoolean("dreamDone", true);
                 worldState.flush(player.server);
@@ -237,6 +276,9 @@ public class Piracydream {
                     data.putInt("StructSizeX", size.getX());
                     data.putInt("StructSizeY", size.getY());
                     data.putInt("StructSizeZ", size.getZ());
+                    dbg("structure piracy_parkour placed at {} size {}", structurePos, size);
+                } else {
+                    dbg("WARNING: structure anti_piracyjar:piracy_parkour not found (data/anti_piracyjar/structure/piracy_parkour.nbt)");
                 }
 
                 double targetX = originX + 0.5;
@@ -270,12 +312,14 @@ public class Piracydream {
                 if (targetY == -1) {
                     targetY = 250.0;
                     flatLand.setBlock(new BlockPos(originX, 249, originZ), Blocks.OAK_PLANKS.defaultBlockState(), 3);
+                    dbg("no solid block found, placed a plank platform at y=249");
                 }
 
                 player.teleportTo(flatLand, targetX, targetY, targetZ, player.getYRot(), player.getXRot());
 
                 data.putBoolean(DREAM_ACTIVE_KEY, true);
                 PacketDistributor.sendToPlayer(player, new DreamStatePayload(true));
+                dbg("teleported to flat_land at {} {} {}, DreamStatePayload(true) sent", targetX, targetY, targetZ);
             }
         }
 
@@ -324,11 +368,13 @@ public class Piracydream {
                 if (loop == null || loop.isStopped()) {
                     loop = new DreamLoopSound();
                     mc.getSoundManager().play(loop);
+                    dbg("client: dream loop sound started ({})", DREAM_SOUND_ID);
                 }
             } else if (loop != null) {
 
                 mc.getSoundManager().stop(loop);
                 loop = null;
+                dbg("client: dream loop sound stopped");
             }
         }
 

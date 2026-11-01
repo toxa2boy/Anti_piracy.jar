@@ -624,6 +624,30 @@
           "src/main/resources/assets/anti_piracyjar/models/item/watch_spawn_egg.json"
         ]
       }
+    },
+    {
+      "name": "StoneBedsEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "stone_beds_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/StoneBedsEvent.java"
+        ]
+      }
+    },
+    {
+      "name": "StoneBedUseEvent",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "stone_bed_use_event",
+      "metadata": {
+        "files": [
+          "src/main/java/net/mcreator/antipiracyjar/StoneBedUseEvent.java"
+        ]
+      }
     }
   ],
   "variable_elements": [],
@@ -768,8 +792,8 @@
     "en_us": {
       "entity.anti_piracyjar.watch": "Watch",
       "entity.anti_piracyjar.pirat": "Pirat",
-      "subtitles.startvideo": "",
       "subtitles.ambient": "",
+      "subtitles.startvideo": "",
       "item.anti_piracyjar.pirat_spawn_egg": "Pirat Spawn Egg",
       "subtitles.vhs": "",
       "item.anti_piracyjar.watch_spawn_egg": "Watch Spawn Egg",
