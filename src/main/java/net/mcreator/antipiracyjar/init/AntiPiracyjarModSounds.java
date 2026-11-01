@@ -26,4 +26,6 @@ public class AntiPiracyjarModSounds {
 	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_DEATH = REGISTRY.register("drun_death", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_death")));
 	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_STEP = REGISTRY.register("drun_step", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_step")));
 	public static final DeferredHolder<SoundEvent, SoundEvent> SATANA = REGISTRY.register("satana", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "satana")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_KNOCK_GLASS = REGISTRY.register("drun_knock_glass", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_knock_glass")));
+	public static final DeferredHolder<SoundEvent, SoundEvent> DRUN_KNOCK_WOOD = REGISTRY.register("drun_knock_wood", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "drun_knock_wood")));
 }

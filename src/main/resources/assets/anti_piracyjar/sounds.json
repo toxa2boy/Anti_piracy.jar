@@ -208,5 +208,21 @@
         "stream": false
       }
     ]
+  },
+  "drun_knock_glass": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_knock_glass",
+        "stream": false
+      }
+    ]
+  },
+  "drun_knock_wood": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_knock_wood",
+        "stream": false
+      }
+    ]
   }
 }
