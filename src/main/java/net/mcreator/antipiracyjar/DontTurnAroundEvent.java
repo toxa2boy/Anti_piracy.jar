@@ -32,6 +32,12 @@ public final class DontTurnAroundEvent {
         player.addEffect(new MobEffectInstance(MobEffects.WITHER, 60, 0, false, true, true));
     }
 
+    public static void visitScare(ServerPlayer player) {
+        ARMED.put(player.getUUID(),player.server.overworld().getGameTime()+60);
+        scare(player);
+        PacketDistributor.sendToPlayer(player,new HorrorNetwork.EffectPayload(28));
+    }
+
     @SubscribeEvent
     public static void login(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player)

@@ -10,6 +10,9 @@ public final class HorrorClientEffects {
     public static int sequence;
     public static long whiteout;
     public static void receive(int effect) {
+        if (effect==27) { VhsReadableGui.restoreFont();return; }
+        if (effect==28) { DontTurnAroundClient.screamNow();return; }
+        if (effect==40 || effect==41 || effect==42 || (effect>=200 && effect<=210)) { GroundGrabClient.effect(effect);return; }
         if (effect == 26) { DrunVisitClient.allowCorner(); return; }
         if (effect == 25) { DrunVisitClient.testCorner(); return; }
         if (effect == WatchEncounterEvent.TEST) { WatchEncounterClient.test(); return; }

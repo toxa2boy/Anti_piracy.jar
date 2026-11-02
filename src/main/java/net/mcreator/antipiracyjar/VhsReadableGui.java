@@ -26,6 +26,8 @@ public class VhsReadableGui {
         applyFont();
     }
 
+    public static void restoreFont() { pending=true;applyFont(); }
+
     private static void applyFont() {
         Minecraft minecraft = Minecraft.getInstance();
         if (!pending || minecraft.level == null || minecraft.getOverlay() != null

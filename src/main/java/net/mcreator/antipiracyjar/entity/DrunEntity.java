@@ -56,6 +56,8 @@ public class DrunEntity extends Monster implements GeoEntity {
 	private boolean lastloop;
 	private long lastSwing;
 	public String animationprocedure = "empty";
+    private static final EntityDataAccessor<Boolean> CRAWLING=SynchedEntityData.defineId(DrunEntity.class,EntityDataSerializers.BOOLEAN);
+    public boolean isTunnelCrawling() { return entityData.get(CRAWLING); }
     private String eventAnimation = "undefined";
 
     public void setEventAnimation(String animation) {
@@ -68,6 +70,9 @@ public class DrunEntity extends Monster implements GeoEntity {
 
     private PlayState screamerPredicate(AnimationState<DrunEntity> event) {
         return switch (eventAnimation) {
+            case "event_grab_rise" -> event.setAndContinue(RawAnimation.begin().thenPlayAndHold("event_grab_rise"));
+            case "event_grab_hold" -> event.setAndContinue(RawAnimation.begin().thenLoop("event_grab_hold"));
+            case "event_grab_sink" -> event.setAndContinue(RawAnimation.begin().thenPlayAndHold("event_grab_sink"));
             case "event_visit_walk" -> event.setAndContinue(RawAnimation.begin().thenLoop("animation"));
             case "event_visit_wait" -> event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
             case "event_ui" -> event.setAndContinue(RawAnimation.begin().thenLoop("event_watch"));
@@ -88,6 +93,7 @@ public class DrunEntity extends Monster implements GeoEntity {
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
+		builder.define(CRAWLING,false);
 		builder.define(SHOOT, false);
 		builder.define(ANIMATION, "undefined");
 		builder.define(TEXTURE, "yess");
@@ -130,22 +136,22 @@ public class DrunEntity extends Monster implements GeoEntity {
 
 	@Override
 	public SoundEvent getAmbientSound() {
-		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.warden.heartbeat"));
+		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_ambient"));
 	}
 
 	@Override
 	public void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.warden.step")), 0.15f, 1);
+		this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_step")), 0.15f, 1);
 	}
 
 	@Override
 	public SoundEvent getHurtSound(DamageSource ds) {
-		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.warden.hurt"));
+		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_hurt"));
 	}
 
 	@Override
 	public SoundEvent getDeathSound() {
-		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.generic.death"));
+		return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_death"));
 	}
 
 	@Override
@@ -161,8 +167,72 @@ public class DrunEntity extends Monster implements GeoEntity {
 			this.setTexture(compound.getString("Texture"));
 	}
 
+    @Override
+    protected net.minecraft.world.entity.ai.navigation.PathNavigation createNavigation(Level world) {
+        return new net.minecraft.world.entity.ai.navigation.GroundPathNavigation(this,world) {
+            @Override
+            protected net.minecraft.world.level.pathfinder.PathFinder createPathFinder(int nodes) {
+                this.nodeEvaluator=new net.minecraft.world.level.pathfinder.WalkNodeEvaluator() {
+                    @Override
+                    public void prepare(net.minecraft.world.level.PathNavigationRegion region,Mob mob) {
+                        super.prepare(region,mob);
+                        if(mob.getTarget()!=null && mob.level().dimension().location().toString().equals("anti_piracyjar:kamniizmerenie")) {
+                            this.entityWidth=1;this.entityDepth=1;this.entityHeight=1;
+                        }
+                    }
+                };
+                this.nodeEvaluator.setCanPassDoors(true);
+                return new net.minecraft.world.level.pathfinder.PathFinder(this.nodeEvaluator,nodes);
+            }
+        };
+    }
+
+    private boolean standClear(net.minecraft.world.phys.Vec3 feet) {
+        return level().noCollision(this,net.minecraft.world.phys.AABB.ofSize(feet.add(0,.9,0),.6,1.8,.6));
+    }
+
+    private boolean lowPassage(net.minecraft.world.phys.Vec3 feet) {
+        var low=net.minecraft.world.phys.AABB.ofSize(feet.add(0,.425,0),.55,.85,.55);
+        return !standClear(feet) && level().noCollision(this,low);
+    }
+
+    private int crawlUntil;
+    private void updateTunnelMovement() {
+        boolean stone=level().dimension().location().toString().equals("anti_piracyjar:kamniizmerenie");
+        boolean pursuit=getTarget()!=null && getTarget().isAlive();
+        boolean needs=stone && pursuit && !standClear(position());
+        if(stone && pursuit && !needs) {
+            var path=getNavigation().getPath();
+            var destination=path!=null && !path.isDone() ? path.getNextEntityPos(this) : getTarget().position();
+            var delta=destination.subtract(position());
+            var forward=new net.minecraft.world.phys.Vec3(delta.x,0,delta.z).normalize();
+            if(forward.lengthSqr()>.1) {
+                for(double distance:new double[]{.4,.8,1.2}) {
+                    var sample=position().add(forward.scale(distance));
+                    if(lowPassage(sample)) { needs=true;break; }
+                }
+            }
+        }
+        if(needs) crawlUntil=tickCount+15;
+        boolean crawl=stone && (needs || (isTunnelCrawling() && (!standClear(position()) || (pursuit && tickCount<crawlUntil))));
+        if(crawl!=isTunnelCrawling()) { entityData.set(CRAWLING,crawl);refreshDimensions(); }
+        var speed=getAttribute(Attributes.MOVEMENT_SPEED);
+        double desired=(0.4/1.5)*(crawl ? .55 : 1.0);
+        if(speed!=null && Math.abs(speed.getBaseValue()-desired)>1.0E-6) speed.setBaseValue(desired);
+    }
+
+    @Override
+    public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
+        boolean hit=super.doHurtTarget(target);
+        if(hit) playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("anti_piracyjar:drun_attack")),.8F,.9F+random.nextFloat()*.2F);
+        return hit;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() { return 160; }
+
     private boolean visitPhantom() {
-        return level().isClientSide && (eventAnimation.equals("event_ui") || eventAnimation.equals("event_knock") || eventAnimation.startsWith("event_visit_"));
+        return level().isClientSide && (eventAnimation.equals("event_ui") || eventAnimation.equals("event_knock") || eventAnimation.startsWith("event_visit_") || eventAnimation.startsWith("event_grab_"));
     }
 
     @Override
@@ -178,6 +248,7 @@ public class DrunEntity extends Monster implements GeoEntity {
             setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
             return;
         }
+        if (!level().isClientSide && tickCount%5==0) updateTunnelMovement();
         super.aiStep();
     }
 
@@ -189,7 +260,7 @@ public class DrunEntity extends Monster implements GeoEntity {
 
 	@Override
 	public EntityDimensions getDefaultDimensions(Pose pose) {
-		return super.getDefaultDimensions(pose).scale(1f);
+		return isTunnelCrawling() ? EntityDimensions.scalable(.55F,.85F).withEyeHeight(.65F) : super.getDefaultDimensions(pose).scale(1f);
 	}
 
 	public static void init(RegisterSpawnPlacementsEvent event) {
@@ -200,7 +271,7 @@ public class DrunEntity extends Monster implements GeoEntity {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		AttributeSupplier.Builder builder = Mob.createMobAttributes();
-		builder = builder.add(Attributes.MOVEMENT_SPEED, 0.4);
+		builder = builder.add(Attributes.MOVEMENT_SPEED, 0.4 / 1.5);
 		builder = builder.add(Attributes.MAX_HEALTH, 100);
 		builder = builder.add(Attributes.ARMOR, 5);
 		builder = builder.add(Attributes.ATTACK_DAMAGE, 6);
@@ -213,7 +284,8 @@ public class DrunEntity extends Monster implements GeoEntity {
 
 	private PlayState movementPredicate(AnimationState event) {
         if (eventAnimation.startsWith("event_")) return PlayState.STOP;
-		if (this.animationprocedure.equals("empty")) {
+		if(isTunnelCrawling()) return event.setAndContinue(RawAnimation.begin().thenLoop(event.isMoving() ? "tunnel_crawl" : "tunnel_crawl_idle"));
+        if (this.animationprocedure.equals("empty")) {
 			if ((event.isMoving() || !(event.getLimbSwingAmount() > -0.15F && event.getLimbSwingAmount() < 0.15F))
 
 			) {

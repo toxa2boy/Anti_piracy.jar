@@ -146,6 +146,13 @@ public final class DrunVisitClient {
     }
 
     private static void moveVisitor() {
+        var player=Minecraft.getInstance().player;
+        if (phase==3) { if (++pause>=20) phase=2; return; }
+        if (phase==2 && player!=null && player.distanceToSqr(visitor)<5.0625
+                && world.clip(new ClipContext(player.getEyePosition(),visitor.position().add(0,1.6,0),
+                ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player)).getType()==HitResult.Type.MISS) {
+            phase=3;pause=0;report(3);return;
+        }
         if (phase == 1) {
             if (++pause >= 132) { phase=2; waypoint=route.size()-2; visitor.setEventAnimation("event_visit_walk"); }
             else if (pause == 72) visitor.setEventAnimation("event_visit_wait");

@@ -54,7 +54,7 @@
     "attackStrength": 6,
     "attackKnockback": 1.0,
     "knockbackResistance": 1.0,
-    "movementSpeed": 0.4,
+    "movementSpeed": 0.26666666666666666,
     "armorBaseValue": 5.0,
     "trackingRange": 64,
     "followRange": 32,
@@ -88,16 +88,16 @@
       "value": "Items.GOLDEN_APPLE#1"
     },
     "livingSound": {
-      "value": "entity.warden.heartbeat"
+      "value": "CUSTOM:drun_ambient"
     },
     "hurtSound": {
-      "value": "entity.warden.hurt"
+      "value": "CUSTOM:drun_hurt"
     },
     "deathSound": {
-      "value": "entity.generic.death"
+      "value": "CUSTOM:drun_death"
     },
     "stepSound": {
-      "value": "entity.warden.step"
+      "value": "CUSTOM:drun_step"
     },
     "raidCelebrationSound": {
       "value": ""

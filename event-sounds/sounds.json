@@ -147,5 +147,37 @@
         "stream": false
       }
     ]
+  },
+  "drun_grab_eruption": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_grab_eruption",
+        "stream": false
+      }
+    ]
+  },
+  "drun_grab_shriek": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_grab_shriek_1",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_grab_shriek_2",
+        "stream": false
+      },
+      {
+        "name": "anti_piracyjar:drun_grab_shriek_3",
+        "stream": false
+      }
+    ]
+  },
+  "drun_grab_retreat": {
+    "sounds": [
+      {
+        "name": "anti_piracyjar:drun_grab_retreat",
+        "stream": false
+      }
+    ]
   }
 }

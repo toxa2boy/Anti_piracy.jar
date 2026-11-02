@@ -64,7 +64,7 @@ final class StoneWorldLayout {
         }
     }
 
-    record Point(int x, int z, int floor, double radius, int height, boolean main) { }
+    record Point(int x, int z, int floor, double radius, int height, boolean main, int profile) { }
 
     static final class Region {
         final List<Room> rooms = new ArrayList<>();
@@ -97,22 +97,25 @@ final class StoneWorldLayout {
             double length = Math.hypot(bx - ax, bz - az);
             int steps = Math.max(1, (int) (length * 3));
             int px = ax, pz = az, pf = af;
-            double bend = 3 + number(salt, 8, 7);
+            double bend = 2 + number(salt, 8, 4);
+            int roll = number(salt, 40, 100);
+            int profile = roll < 60 ? 0 : roll < 95 ? 1 : 2;
             for (int i = 0; i <= steps; i++) {
                 double t = i / (double) steps;
                 double wave = Math.sin(t * Math.PI) * (Math.sin(t * Math.PI * 3 + (salt & 15)) * bend);
                 int x = (int) Math.round(ax + (bx - ax) * t - (bz - az) / length * wave);
                 int z = (int) Math.round(az + (bz - az) * t + (bx - ax) / length * wave);
                 int floor = (int) Math.round(af + (bf - af) * t);
-                double radius = main ? (0.32 + 0.9 * (0.5 + 0.5 * Math.sin(t * 17 + (salt & 31)))) : 0.55;
+                double waveWidth = 0.5 + 0.5 * Math.sin(t * 17 + (salt & 31));
+                double radius = profile == 0 ? 1.65 + 0.75 * waveWidth : profile == 1 ? 0.55 + 0.65 * waveWidth : 0.55;
                 double roofWave = 0.5 + 0.5 * Math.sin(t * 23 + number(salt, 20, 19));
-                int height = main ? 2 + (roofWave > 0.7 ? 1 : 0) : (t > 0.6 ? 1 : 2 + (int) (roofWave * 2));
+                int height = profile == 0 ? 3 + (roofWave > 0.7 ? 1 : 0) : profile == 1 ? 2 + (roofWave > 0.6 ? 1 : 0) : 2;
                 while (px != x || pz != z) {
                     if (px != x) px += Integer.signum(x - px); else pz += Integer.signum(z - pz);
                     pf += Integer.signum(floor - pf);
-                    points.add(new Point(px, pz, pf, radius, height, main));
+                    points.add(new Point(px, pz, pf, radius, height, main, profile));
                 }
-                points.add(new Point(x, z, floor, radius, height, main));
+                points.add(new Point(x, z, floor, radius, height, main, profile));
                 pf = floor;
             }
         }
@@ -154,7 +157,7 @@ final class StoneWorldLayout {
                 int tx = wx - p.x, tz = wz - p.z;
                 if (tx * tx + tz * tz <= p.radius * p.radius) tunnels.add(p);
                 else if (tx * tx + tz * tz <= (p.radius + 1.15) * (p.radius + 1.15)) shoulders.add(p);
-                if (p.main && tx == 0 && tz == 0) center = true;
+                if (p.main && tx * tx + tz * tz <= (p.profile == 0 ? 2 : 0)) center = true;
             }
             centerline = center;
         }
@@ -162,28 +165,31 @@ final class StoneWorldLayout {
         BlockState at(int y) {
             if (y <= -64 || y >= 319) return Blocks.BEDROCK.defaultBlockState();
             if (y < 24 || y > 70) return STONE;
-            if (wallRoom != null && !(centerline && y > wallRoom.floor && y <= wallRoom.floor + 3)) {
-                BlockState embedded = StoneWallStructures.at(wallRoom, wx, y, wz);
-                if (embedded != null) return embedded;
-            }
-            int tunnelFloor = Integer.MAX_VALUE, tunnelTop = Integer.MIN_VALUE;
+            int tunnelFloor = Integer.MAX_VALUE, tunnelTop = Integer.MIN_VALUE, passageProfile = 2;
             boolean main = false;
             for (Point p : tunnels) main |= p.main;
             for (Point p : tunnels) {
                 if (main && !p.main) continue;
+                passageProfile = Math.min(passageProfile, p.profile);
                 tunnelFloor = Math.min(tunnelFloor, p.floor);
                 tunnelTop = Math.max(tunnelTop, p.floor + p.height);
             }
             int tunnelProfile = number(hash(Math.floorDiv(wx, 6), Math.floorDiv(wz, 6), seed + 2081), 12, 3);
             boolean steps = false;
             for (Point p : tunnels) if (p.main && p.floor != tunnelFloor) steps = true;
-            if (main && room == null) tunnelTop = tunnelFloor + (steps || tunnelProfile == 2 ? 3 : 2);
+            if (main && room == null) tunnelTop = tunnelFloor + (passageProfile == 0
+                    ? (steps || tunnelProfile == 2 ? 4 : 3)
+                    : passageProfile == 1 ? (steps || tunnelProfile == 2 ? 3 : 2) : (steps ? 3 : 2));
+            if (wallRoom != null && !(centerline && y >= tunnelFloor && y <= tunnelTop)) {
+                BlockState embedded = StoneWallStructures.at(wallRoom, wx, y, wz);
+                if (embedded != null) return embedded;
+            }
             if (main && y == tunnelFloor) return STONE;
             if (tunnelFloor != Integer.MAX_VALUE && y > tunnelFloor && y <= tunnelTop) {
                 if (main || room == null) {
                     if (room == null) {
                         int clearance = tunnelTop - tunnelFloor;
-                        if (y == tunnelTop && clearance == 2 && tunnelProfile == 0 && !steps)
+                        if (passageProfile == 2 && clearance == 2 && y == tunnelTop)
                             return Blocks.STONE_SLAB.defaultBlockState().setValue(BlockStateProperties.SLAB_TYPE, SlabType.TOP);
                         if (y == tunnelTop && clearance >= 3 && !centerline) {
                             int roof = number(texture, 8, 6);
@@ -193,7 +199,7 @@ final class StoneWorldLayout {
                                     .setValue(BlockStateProperties.HALF, Half.TOP)
                                     .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.from2DDataValue(number(texture, 17, 4)));
                         }
-                        if (!centerline && y == tunnelFloor + 1) {
+                        if (!centerline && y == tunnelFloor + 1 && (texture & 24)==24) {
                             if ((texture & 7) == 0) return Blocks.COBBLESTONE_WALL.defaultBlockState();
                             if ((texture & 7) == 1) return Blocks.STONE_SLAB.defaultBlockState();
                             if ((texture & 7) == 2) return Blocks.ANDESITE_STAIRS.defaultBlockState()

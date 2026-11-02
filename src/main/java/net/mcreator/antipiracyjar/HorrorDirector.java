@@ -60,7 +60,7 @@ public final class HorrorDirector {
 
     private static int limit(String type) {
         return switch (type) {
-            case "turnaround", "knock" -> 1;
+            case "turnaround", "knock", "ground_grab" -> 1;
             case "watch", "roommate", "inventory" -> 2;
             case "omen_chat" -> 3;
             default -> Integer.MAX_VALUE;
@@ -78,7 +78,7 @@ public final class HorrorDirector {
             default -> 0;
         };
         if (repeatMinute>0 && data.getInt("directorCount_"+type)>0 && clock<at(server,repeatMinute)) return false;
-        int total=personal+(type.equals("omen_chat") ? 0 : Math.min(3,partySize-1));
+        int total=personal+(type.equals("omen_chat") || type.equals("ground_grab") ? 0 : Math.min(3,partySize-1));
         if (data.getInt("directorCount_"+type)>=total) return false;
         if (!owner.isEmpty() && data.getInt("directorCount_"+type+"_"+owner)>=personal) return false;
         return !type.equals(data.getString("directorLastType"));

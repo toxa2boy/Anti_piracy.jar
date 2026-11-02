@@ -9,6 +9,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 @EventBusSubscriber(modid = "anti_piracyjar", bus = EventBusSubscriber.Bus.MOD)
 public final class HorrorNetwork {
+    public record CrawlTogglePayload(boolean toggle) implements CustomPacketPayload {
+        public static final Type<CrawlTogglePayload> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar","crawl_toggle"));
+        public static final StreamCodec<ByteBuf,CrawlTogglePayload> CODEC=ByteBufCodecs.BOOL.map(CrawlTogglePayload::new,CrawlTogglePayload::toggle);
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+    public record CrawlStatePayload(boolean crawling) implements CustomPacketPayload {
+        public static final Type<CrawlStatePayload> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar","crawl_state"));
+        public static final StreamCodec<ByteBuf,CrawlStatePayload> CODEC=ByteBufCodecs.BOOL.map(CrawlStatePayload::new,CrawlStatePayload::crawling);
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
     public record EffectPayload(int effect) implements CustomPacketPayload {
         public static final Type<EffectPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar", "story_effect"));
         public static final StreamCodec<ByteBuf, EffectPayload> CODEC = ByteBufCodecs.VAR_INT.map(EffectPayload::new, EffectPayload::effect);
@@ -21,6 +31,18 @@ public final class HorrorNetwork {
     }
     @SubscribeEvent
     public static void register(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(CrawlTogglePayload.TYPE,CrawlTogglePayload.CODEC,
+            (payload,context)->context.enqueueWork(()->{
+                if(payload.toggle() && context.player() instanceof net.minecraft.server.level.ServerPlayer player) PlayerCrawlEvent.toggle(player);
+            }));
+        event.registrar("1").playToClient(CrawlStatePayload.TYPE,CrawlStatePayload.CODEC,
+            (payload,context)->context.enqueueWork(()->PlayerCrawlClient.state(payload.crawling())));
+        event.registrar("1").playToClient(GrabStartPayload.TYPE,GrabStartPayload.CODEC,
+            (payload,context)->context.enqueueWork(()->GroundGrabClient.begin(payload)));
+        event.registrar("1").playToServer(GrabStatePayload.TYPE,GrabStatePayload.CODEC,
+            (payload,context)->context.enqueueWork(()->{
+                if(context.player() instanceof net.minecraft.server.level.ServerPlayer player) GroundGrabEvent.receive(player,payload.action());
+            }));
         event.registrar("1").playToServer(UiVisitPayload.TYPE,UiVisitPayload.CODEC,
                 (payload,context)->context.enqueueWork(()->{
                     if (context.player() instanceof net.minecraft.server.level.ServerPlayer player) UiVisitGate.receive(player,payload.action());
@@ -80,5 +102,17 @@ public final class HorrorNetwork {
         public static final Type<UiVisitPayload> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar","ui_visit"));
         public static final StreamCodec<ByteBuf,UiVisitPayload> CODEC=ByteBufCodecs.VAR_INT.map(UiVisitPayload::new,UiVisitPayload::action);
         public Type<? extends CustomPacketPayload> type(){return TYPE;}
+    }
+    public record GrabStartPayload(double x,double y,double z) implements CustomPacketPayload {
+        public static final Type<GrabStartPayload> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar","ground_grab_start"));
+        public static final StreamCodec<ByteBuf,GrabStartPayload> CODEC=StreamCodec.of(
+            (b,p)->{ b.writeDouble(p.x());b.writeDouble(p.y());b.writeDouble(p.z()); },
+            b->new GrabStartPayload(b.readDouble(),b.readDouble(),b.readDouble()));
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    }
+    public record GrabStatePayload(int action) implements CustomPacketPayload {
+        public static final Type<GrabStatePayload> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath("anti_piracyjar","ground_grab_state"));
+        public static final StreamCodec<ByteBuf,GrabStatePayload> CODEC=ByteBufCodecs.VAR_INT.map(GrabStatePayload::new,GrabStatePayload::action);
+        public Type<? extends CustomPacketPayload> type() { return TYPE; }
     }
 }

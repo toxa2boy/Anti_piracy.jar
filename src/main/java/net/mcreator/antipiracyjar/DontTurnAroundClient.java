@@ -49,6 +49,23 @@ public final class DontTurnAroundClient {
         facePlayer();
     }
 
+    public static void screamNow() {
+        clear();
+        var mc=Minecraft.getInstance();
+        if(mc.player==null || mc.level==null)return;
+        world=mc.level;
+        apparition=AntiPiracyjarModEntities.DRUN.get().create(world);
+        if(apparition==null)return;
+        while(world.getEntity(nextId)!=null)nextId--;
+        apparition.setId(nextId--);apparition.setNoAi(true);apparition.setNoGravity(true);
+        apparition.setSilent(true);apparition.setInvulnerable(true);apparition.noPhysics=true;
+        scareDirection=Vec3.directionFromRotation(0,mc.player.getYRot());
+        positionAtFace();apparition.setEventAnimation("event_screamer");
+        world.addEntity(apparition);
+        screaming=52;frozenTicks=60;frozenPosition=mc.player.position();
+        sound=SimpleSoundInstance.forUI(SCREAM,1F,1F);mc.getSoundManager().play(sound);
+    }
+
     public static void begin() {
         clear();
         frozenTicks = 0;

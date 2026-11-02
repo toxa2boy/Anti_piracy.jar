@@ -157,6 +157,14 @@ public final class DrunSleepEvent {
     public static void receive(ServerPlayer player, int action) {
         Visit visit = VISITS.get(player.getUUID());
         if (visit == null) return;
+        if (action==3 && visit.knocking>=120 && player.isAlive() && player.level().dimension()==Level.OVERWORLD
+                && visit.site.route().stream().anyMatch(pos->player.distanceToSqr(Vec3.atBottomCenterOf(pos))<=9)) {
+            VISITS.remove(player.getUUID());
+            PacketDistributor.sendToPlayer(player,new HorrorNetwork.KnockPayload(visit.site.target(),visit.site.feet(),java.util.List.of(),0,true));
+            HorrorDirector.renew(player,"knock",80);
+            DontTurnAroundEvent.visitScare(player);
+            return;
+        }
         if (action == 1 && visit.knocking < 0 && visit.age >= 5) visit.knocking = 0;
         if (action == 2) { VISITS.remove(player.getUUID()); HorrorDirector.finish(player,"knock",visit.knocking>=0); }
     }

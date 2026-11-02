@@ -55,9 +55,22 @@ public class HorrorFontFinishEvent {
     public static void tick(ServerTickEvent.Post event) {
         if (remaining > 0 && --remaining == 0) {
             remaining = -1;
+            var state=HorrorWorldState.get(event.getServer());
+            state.data.putBoolean("fontEnabled",true);
+            state.flush(event.getServer());
             for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
                 PacketDistributor.sendToPlayer(player, new FontFinishPayload(true));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void login(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        var state=HorrorWorldState.get(player.server);
+        if (state.data.getBoolean("fontEnabled") || state.data.getInt("storyStage")>0) {
+            state.data.putBoolean("fontEnabled",true);state.setDirty();
+            PacketDistributor.sendToPlayer(player,new HorrorNetwork.EffectPayload(27));
         }
     }
 

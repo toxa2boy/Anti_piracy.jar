@@ -123,6 +123,48 @@ public final class StoneHuntEvent {
         if (!spawnNear(player)) HorrorDirector.finish(player,"stone_hunt",false);
     }
 
+    @SubscribeEvent
+    public static void spawnCommand(net.neoforged.neoforge.event.RegisterCommandsEvent event) {
+        event.getDispatcher().register(net.minecraft.commands.Commands.literal("druntest").requires(s->s.hasPermission(2))
+            .then(net.minecraft.commands.Commands.literal("spawn").executes(c->spawnForTest(c.getSource()))));
+    }
+
+    private static int spawnForTest(net.minecraft.commands.CommandSourceStack source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        var player=source.getPlayerOrException();
+        var level=player.serverLevel();
+        var state=HorrorWorldState.get(player.server);
+        DrunEntity mob=null;
+        boolean existing=false;
+        if(state.data.hasUUID(HUNTER)) {
+            var id=state.data.getUUID(HUNTER);
+            for(var candidate:player.server.getAllLevels()) {
+                if(candidate.getEntity(id) instanceof DrunEntity found && found.isAlive()) {
+                    if(candidate!=level) {
+                        source.sendFailure(Component.literal("Drun already exists in "+candidate.dimension().location()+". Run this command there."));return 0;
+                    }
+                    mob=found;existing=true;break;
+                }
+            }
+            if(mob==null) { source.sendFailure(Component.literal("The existing Drun is in an unloaded chunk. Load that area first."));return 0; }
+        } else mob=AntiPiracyjarModEntities.DRUN.get().create(level);
+        if(mob==null) return 0;
+        for(int radius=5;radius<=12;radius++) for(int index=0;index<24;index++) {
+            double angle=index*Math.PI/12;
+            for(int dy:new int[]{0,1,-1,2,-2,3,-3}) {
+                var pos=BlockPos.containing(player.getX()+Math.cos(angle)*radius,player.getY()+dy,player.getZ()+Math.sin(angle)*radius);
+                if(!level.hasChunkAt(pos) || !level.getBlockState(pos.below()).isFaceSturdy(level,pos.below(),net.minecraft.core.Direction.UP)) continue;
+                var box=mob.getBoundingBox().move(Vec3.atBottomCenterOf(pos).subtract(mob.position()));
+                if(!level.getWorldBorder().isWithinBounds(pos) || !level.noCollision(mob,box) || level.containsAnyLiquid(box)) continue;
+                mob.moveTo(pos.getX()+.5,pos.getY(),pos.getZ()+.5,player.getYRot()+180,0);
+                mob.getNavigation().stop();mob.setDeltaMovement(Vec3.ZERO);mob.fallDistance=0;
+                mob.setPersistenceRequired();mob.setTarget(player);
+                if(!existing && !level.addFreshEntity(mob)) { source.sendFailure(Component.literal("Drun could not be spawned."));return 0; }
+                source.sendSuccess(()->Component.literal("Drun is nearby."),false);return 1;
+            }
+        }
+        source.sendFailure(Component.literal("No clear floor nearby. Stand in a larger room."));return 0;
+    }
+
     static boolean spawnNear(ServerPlayer player) {
         var level = player.serverLevel();
         if (HorrorWorldState.get(player.server).data.hasUUID(HUNTER)) return false;
