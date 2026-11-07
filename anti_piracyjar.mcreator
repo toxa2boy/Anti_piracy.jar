@@ -855,19 +855,19 @@
     }
   ],
   "tag_elements": {
-    "BLOCKS:minecraft:overworld_carver_replaceables": [
-      "~Blocks.STONE#0"
-    ],
     "BIOMES:minecraft:has_structure/jungle_temple": [
-      "~CUSTOM:Kamnibiom"
-    ],
-    "BIOMES:minecraft:has_structure/mineshaft_mesa": [
       "~CUSTOM:Kamnibiom"
     ],
     "BIOMES:minecraft:has_structure/mineshaft": [
       "~CUSTOM:Kamnibiom"
     ],
+    "BLOCKS:minecraft:overworld_carver_replaceables": [
+      "~Blocks.STONE#0"
+    ],
     "BIOMES:minecraft:has_structure/village_plains": [
+      "~CUSTOM:Kamnibiom"
+    ],
+    "BIOMES:minecraft:has_structure/mineshaft_mesa": [
       "~CUSTOM:Kamnibiom"
     ]
   },
@@ -876,8 +876,8 @@
     "en_us": {
       "entity.anti_piracyjar.watch": "Watch",
       "entity.anti_piracyjar.pirat": "Pirat",
-      "subtitles.startvideo": "",
       "subtitles.ambient": "",
+      "subtitles.startvideo": "",
       "item.anti_piracyjar.pirat_spawn_egg": "Pirat Spawn Egg",
       "subtitles.vhs": "",
       "subtitles.drun_knock_glass": "",
